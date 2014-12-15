@@ -1,0 +1,110 @@
+
+<style>
+    input {
+        font-size: 11px !important;
+    }
+</style>
+<div ng-controller="ControllerSac" ng-init="carregaChamadosAbertos()">
+
+    <div class="row">
+        <div class="col-lg-2" style="margin-left: 15px;">
+            <div class="form-group">
+                <label for="pesquisa"><i class="fa fa-search"></i>  Pesquisa de Dados </label>
+                <input type="text" class="form-control" id="pesquisa" ng-model="pesquisa">
+            </div>
+        </div>
+
+        <div class="col-lg-1" style="margin-left: 15px;">
+            <div class="form-group">
+                <label for="dataInicial"><i class="fa fa-calendar"></i> Inicial </label>
+                <input type="text" class="form-control" id="dataInicial" ng-model="dataInicial" directiva-data ui-mask="99/99/9999" model-view-value="true">
+            </div>
+        </div>
+
+        <div class="col-lg-1">
+            <div class="form-group">
+                <label for="dataFinal"><i class="fa fa-calendar"></i> Final </label>
+                <input type="text" class="form-control" id="dataFinal" ng-model="dataFinal" directiva-data ui-mask="99/99/9999"  model-view-value="true">
+            </div>
+        </div>
+
+        <div class="col-lg-3" style="margin-top: 25px;">
+            <span style="font-size: 11px; color: #c77405; font-weight: bold">ATENÇÃO, </span> <span style="font-size: 11px;">existem </span><span style="font-weight: bold; color: #ff0000">{{totalChamadosAbertos}}</span><span style="font-size: 11px;"> Chamados abertos </span>
+        </div>
+
+        <div class="col-lg-4" style="margin-top: 22px;">
+            <ol class="breadcrumb" style="background-color: #E98531;">
+                <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-users fa"></i> &nbsp;CHAMADOS ABERTOS</li>
+            </ol>
+        </div>
+    </div>
+
+
+
+    <div ng-init="carregaChamadosAbertos()">
+        <table class="table table-hover">
+            <thead>
+            <tr style="font-size: 12px;">
+                <td> - </td>
+                <th>Contrato</th>
+                <th>Cod.Imóvel</th>
+                <th>Endereço</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Rp.Abertura</th>
+                <th>Data.Abertura</th>
+                <th> - </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="chamado in chamados | limitTo: limit" style="font-size: 11px;">
+                <td><a href="#/sac/chamado/abrir/{{chamado.ID_SAC}}" title="Abrir dados do chamado"> <span class="glyphicon glyphicon-save"></span> </a></td>
+                <td> {{chamado.CODIGO_CONTRATO}} </td>
+                <td> {{chamado.CODIGO}} </td>
+                <td> {{chamado.ENDERECO}} </td>
+                <td style="text-transform: capitalize"> {{chamado.STATUS}} </td>
+                <td ng-if="chamado.PRIORIDADE == 'baixa'"> <img src="/icones/statusBaixaIcon.png" /> <span style="text-transform: capitalize"> {{chamado.PRIORIDADE}}</span> </td>
+                <td ng-if="chamado.PRIORIDADE == 'media'"> <img src="/icones/statusMediaIcon.png" /> <span style="text-transform: capitalize"> {{chamado.PRIORIDADE}}</span> </td>
+                <td ng-if="chamado.PRIORIDADE == 'alta'"> <img src="/icones/statusAltaIcon.png" />  <span style="text-transform: capitalize"> {{chamado.PRIORIDADE}}</span> </td>
+                <td style="text-transform: capitalize"> {{chamado.RP_ABERTURA}} </td>
+                <td> {{chamado.DATA_ABERTURA | date: 'dd/MM/yyyy' }} </td>
+                <td ng-if="chamado.ID_FINANCEIRO != null " title="Existem prestadores neste chamado"> <i class="fa fa-wrench fa-fw "></i> </td>
+                <td ng-if="chamado.ID_FINANCEIRO == null "> - </td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- PAGINAÇÃO -->
+        <div data-pagination="" data-num-pages="numPages()"
+             data-current-page="currentPage" data-max-size="maxSize"
+             data-boundary-links="true" >
+        </div>
+    </div>
+
+
+    <!-- JANELAS MODAIS -->
+    <!-- Modal Cancelamento Vistoria -->
+    <div class="modal fade ajusteModal" id="modalCancelar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header-confirm">
+                    <button type="button" class="close" data-dismiss="modal" style="margin-right: 20px; margin-top: 10px;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="padding-left: 30px; padding-top: 10px;"><i class="fa fa-check-square-o 2x"> </i> Janela de Confirmação</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-weight: bold">Tem certeza que deseja cancelar a vistoria ?</span>
+                </div>
+                <div class="modal-footer">
+                    <span style="font-size: 11px;" ng-show="processando()"><img src="/image/159.gif"/> Processando requisição ...</span>
+                    <div ng-hide="btnModalCancelamento()">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                        <button type="button" class="btn btn-primary" ng-click="cancelarVistoria(id_vistoria)">Sim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim da janela modal cancelamento vistoria -->
+    <!-- Fim janelas modais -->
+
+</div>

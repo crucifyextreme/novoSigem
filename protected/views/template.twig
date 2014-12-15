@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content='noindex, follow' name=robots />
+    <title>SIGEM - Master RSM Imóveis</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <!-- jQuery UI CSS-->
+    <link href="/css/jquery/jquery-ui.css" rel="stylesheet">
+    <!-- FONT-AWESOME -->
+    <link href="/css/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- VEX MODAL -->
+    <link href="/css/vexModal/vex.css" rel="stylesheet" type="text/css">
+    <link href="/css/vexModal/vex-theme-os.css" rel="stylesheet" type="text/css">
+    <link href="/css/vexModal/vex-theme-top.css" rel="stylesheet" type="text/css">
+
+    <!-- CSS PAGINAÇÃO -->
+    <link href="/css/bootstrap/bootstrap-combined.min.css" rel="stylesheet" type="text/css"/>
+
+
+</head>
+
+
+<body ng-app="MainApp">
+
+<!-- DIV NOTIFY -->
+<div class="notify" style="position: absolute; top: 50px; right: 200px;"></div>
+
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/" style="padding-top: 10px !important;"><img src="/image/sigem_logo_mini.png"/></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                <!-- SAC -->
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle ajuste-menu" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-users fa-2x"></i> SAC <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/sac/novoChamado" ng-hide="novoChamadoLink()"><i class="fa fa-file"></i> Novo Chamado</a></li>
+                        <li><a href="#/sac/chamadosAbertos" ng-hide="chamadoAbertoLink()"><i class="fa fa-edit"></i> Chamados Abertos</a></li>
+                        <li><a href="#/sac/todosChamados" ng-hide="todosChamadosLink()"><i class="fa fa-table"></i> Todos os Chamados</a></li>
+                        <!--
+                        <li><a href="#/sac/report/manager/" ng-hide="relatorioGerencialLink()"><i class="fa fa-bar-chart-o"></i> Relatório Gerencial</a></li>
+                        -->
+                        <li role="presentation" class="divider"></li>
+                        <!-- NIVEL 2 PRESTADORES -->
+                        <li class="dropdown-submenu">
+                            <a tabindex="-1" href=""><i class="fa fa-wrench fa-fw "></i> Prestadores</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/sac/novoPrestador" ng-hide="novoCadastroPrestadorLink()"><i class="fa fa-plus-circle"></i> Novo Cadastro</a></li>
+
+                                <li><a href="#/sac/prestadores/financeiro" ng-hide="visualizarPagamentosPrestadoresLink()"><i class="fa fa-money"></i> Financeiro</a></li>
+
+                                <li><a href="#/sac/prestadores/impressaoRecibos"><i class="fa fa-print"></i> Impressão Recibos</a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle ajuste-menu" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-calendar fa-2x"></i> Vistorias <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/vistoria/agendamento"><i class="fa fa-calendar"></i> Agendamento</a></li>
+                        <li><a href="#/vistoria/abertas"><i class="fa fa-edit"></i> Vistorias Em Aberto</a></li>
+                        <li><a href="#/vistoria"><i class="fa fa-table"></i> Todas as Vistorias</a></li>
+                        <li><a href="#/vistoria/agendaVistoriador"><i class="fa fa-calendar-o"></i> Agenda Vistoriador</a></li>
+                        <li><a href="#/vistoria/bancadaVistoriador"><i class="fa fa-camera-retro"></i> Bancada Vistoriador</a></li>
+                        <li><a href="#/vistoria/relatorioVistoria"><i class="fa fa-bar-chart-o"></i> Relatorio Vistoria</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle ajuste-menu" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-phone fa-2x"></i> Negociações <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/negociacao/recisao"><i class="fa fa-file-text-o"></i> Cobrança</a></li>
+                        <li><a href=""><i class="fa fa-university"></i> Controle IPTU</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- RIGHT NAVBAR -->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <img src="/image/picturePadrao.jpg" style="height: 40px; width: 40px; position: absolute; right: 10px; top: 2px;" class="img-circle">
+                    </a>
+                   <ul class="dropdown-menu" role="menu">
+                        <li><a href="/logout" ng-click="sairSistema()" ng-controller="ControllerLogin">Sair do sistema</a></li>
+                        {#<li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Nav header</li>
+                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>#}
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- MENU MENSAGENS DO SISTEMA -->
+            <ul class="nav navbar-nav navbar-right" style="margin-right: 40px;" ng-init="verificaMensagens()" ng-controller="ControllerPrincipal">
+                <li class="dropdown">
+                    <a href="#/principal/notificacoes" role="button" aria-expanded="false">
+                        <i class="fa fa-envelope-square fa-2x"></i>
+                        <span> {{ '{{mensagensDisponiveis}}' }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+
+
+    </div>
+</nav>
+
+    <!-- Page Content -->
+    <div class="container" >
+
+
+        <!-- CONTEUDO DA PAGINA AQUI -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div ng-view style="margin-top: 10px">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Footer -->
+        <footer style="margin: 0px; padding: 0px;">
+            <!--
+            <ol class="breadcrumb" style="background-color: #F58634">
+                <li class="active" style="color: #ffffff; font-size: 11px;"> Master Imóveis Copyright &copy; www.masterimoveis.com.br 2014 </li>
+            </ol>
+            -->
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+
+    <!-- jQuery -->
+    <script src="/js/jquery/jquery.js"></script>
+        <!-- jQuery UI -->
+    <script src="/js/jquery/jquery-ui.js"></script>
+        <!-- jQuery Mask -->
+    <script src="/js/jquery/jquery.maskedinput.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+
+    <!-- ANGULARJS -->
+    <script src="/js/angular/angular.min.js"></script>
+    <script src="/js/angular/angular-resource.min.js"></script>
+    <script src="/js/angular/angular-route.min.js"></script>
+    <script src="/js/angular/angular-animate.min.js"></script>
+    <script src="/js/angular/angular-cookies.js"></script>
+
+    <!-- MINHAS APPS -->
+    <script src="/app.js"></script>
+    <!-- LOGIN -->
+    <script src="/appLogin/src/ModuloLogin.js"></script>
+    <script src="/appLogin/src/ControllerLogin.js"></script>
+    <script src="/appLogin/src/ModelLogin.js"></script>
+    <!-- APP PRINCIPAL -->
+    <script src="/appPrincipal/src/ModuloPrincipal.js"></script>
+    <script src="/appPrincipal/src/ControllerPrincipal.js"></script>
+    <script src="/appPrincipal/src/ModelPrincipal.js"></script>
+    <!-- SAC (Atendimento ao cliente) -->
+    <script src="/appSac/src/ModuloSac.js"></script>
+    <script src="/appSac/src/ControllerSac.js"></script>
+    <script src="/appSac/src/ModelSac.js"></script>
+    <!-- VISTORIA -->
+    <script src="/appVistoria/src/ModuloVistoria.js"></script>
+    <script src="/appVistoria/src/ControllerVistoria.js"></script>
+    <script src="/appVistoria/src/ModelVistoria.js"></script>
+    <!-- RECISAO -->
+    <script src="/appRecisao/src/ModuloRecisao.js"></script>
+    <script src="/appRecisao/src/ControllerRecisao.js"></script>
+    <script src="/appRecisao/src/ModelRecisao.js"></script>
+
+
+<script type="text/javascript" src="/js/mask.js"></script>
+<script type="text/javascript" src="/js/angular/angular-currency-mask.js"></script>
+
+<!-- VEX MODAL -->
+<script type="text/javascript" src="/js/vexModal/vex.combined.min.js"></script>
+<script>vex.defaultOptions.className = 'vex-theme-os';</script>
+
+<!-- NOTIFY.JS -->
+<script type="text/javascript" src="/js/notify.min.js"></script>
+
+<!-- PAGINAÇÃO -->
+<script type="text/javascript" src="/js/angular/ui-bootstrap-tpls-0.3.0.min.js"></script>
+
+
+
+
+
+
+</body>
+</html>

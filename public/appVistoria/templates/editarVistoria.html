@@ -1,0 +1,379 @@
+<style>
+    input[type="text"] {
+        font-size: 11px;
+    }
+
+</style>
+
+<div ng-controller="ControllerVistoria">
+    <form role="form" ng-init="loadEdit()" ng-submit="gravaEdicaoVistoria(item)">
+
+        <!-- CAMPO OCULTO PEGANDO O ID DA VISTORIA -->
+        <input type="hidden" ng-model="item.ID_VISTORIA" value="{{item.ID_VISTORIA}}">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="contrato">* Contrato</label>
+                    <input type="text" class="form-control" id="contrato" ng-model="item.CODIGO_CONTRATO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="cod_imovel">* Cod.Imóvel</label>
+                    <input type="text" class="form-control" name="cod_imovel" id="cod_imovel" ng-model="item.CODIGO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-6" style="margin-top: 25px;">
+                <ol class="breadcrumb" style="background-color:#E98531">
+                    <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-calendar"></i> &nbsp;{{pagina}}</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row" ng-hide="actionsIcons()">
+            <div class="col-lg-4" ng-if="item.STATUS == 'aberta'">
+                <a href="" title="Finalizar Vistoria" ng-click="openModalAcoes(item.ID_VISTORIA, 'finalizada')" style="font-weight: bold">
+                    <img src="/icones/closeIcon.png" /> Finalizar
+                </a>
+
+                <a href="" title="Cancelar Vistoria" ng-click="openModalAcoes(item.ID_VISTORIA, 'cancelada')" style="font-weight: bold; margin-left: 50px;">
+                    <img src="/icones/cancelIcon.png" /> Cancelar
+                </a>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="end_imovel"> Endereço Imóvel</label>
+                    <input type="text" class="form-control" name="end_imovel" id="end_imovel" ng-model="item.ENDERECO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="bairro"> Bairro</label>
+                    <input type="text" class="form-control" name="bairro" id="bairro" ng-model="item.BAIRRO" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="acompanhada">* Acompanhada</label>
+                    <select class="form-control" id="acompanhada" ng-model="item.VISTORIA_ACOMPANHADA" ng-disabled="disabledInputs()">
+                        <option value="">Informe</option>
+                        <option value="nao">Não</option>
+                        <option value="sim">Sim</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="proprietario"> Proprietário</label>
+                    <input type="text" class="form-control" name="proprietario" id="proprietario" ng-model="item.NOME" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="ddd">DDD</label>
+                    <input type="text" class="form-control" name="ddd" id="ddd" ng-model="item.DDD" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_residencial"> Tel.Residencial</label>
+                    <input type="text" class="form-control" name="tel_residencial" id="tel_residencial" ng-model="item.TEL_RESIDENCIAL_PROP" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_celular">Tel.Celular</label>
+                    <input type="text" class="form-control" name="tel_celular" id="tel_celular" ng-model="item.TEL_CELULAR_PROP" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_comercial">Tel.Comercial</label>
+                    <input type="text" class="form-control" name="tel_comercial" id="tel_comercial" ng-model="item.TEL_COMERCIAL_PROP" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" name="email" id="email" ng-model="item.EMAIL_PROP" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Div de Vistoria -->
+        <div class="row">
+            <div class="col-lg-3">
+                <label for="vistoriador">* Vistoriador</label>
+                <select class="form-control form-group" id="vistoriador" ng-model="item.VISTORIADOR" ng-disabled="disabledInputs()">
+                    <option value="">Informe</option>
+                    <option value="flavio">Flavio</option>
+                    <option value="juneo">Juneo</option>
+                </select>
+            </div>
+            <div class="col-lg-1">
+                <label for="horario">* Hrs</label>
+                <input type="text" class="form-control" id="horario" ng-model="item.HORARIO" ui-mask="99:99" style="font-size: 10px;" ng-disabled="disabledInputs()" model-view-value="true">
+            </div>
+            <div class="col-lg-2">
+                <label for="data_vistoria">* Data Vistoria</label>
+                <input type="text" class="form-control" id="data_vistoria" ng-model="item.DATA_VISTORIA" ui-mask="99/99/9999" directiva-data ng-disabled="disabledInputs()" model-view-value="true">
+
+            </div>
+            <div class="col-lg-3">
+                <label for="tipo_vistoria">* Tipo Vistoria</label>
+                <select class="form-control form-group" id="tipo_vistoria" ng-model="item.TIPO_VISTORIA" ng-disabled="disabledInputs()">
+                    <option value="">Informe</option>
+                    <option value="conferencia">Conferência</option>
+                    <option value="entrega">Entrega</option>
+                    <option value="recebimento">Recebimento</option>
+                </select>
+            </div>
+            <div class="col-lg-2" style="margin-top: 20px;">
+                <a href="" title="Abrir Agenda de Vistorias" ng-click="agenda()"><i class="fa fa-calendar fa-1x"></i> Agenda Vistoria</a>
+            </div>
+        </div>
+        <!-- Fim da Div de Vistoria -->
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="solicitante">* Solicitante</label>
+                    <input type="text" class="form-control" name="solicitante" id="solicitante" ng-model="item.SOLICITANTE" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_residencial_solicitante">* Tel.Residencial</label>
+                    <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_residencial_solicitante" id="tel_residencial_solicitante" ng-model="item.TEL_RESIDENCIAL_SOLICITANTE" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_comercial_solicitante">Tel.Comercial</label>
+                    <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_comercial_solicitante" id="tel_comercial_solicitante" ng-model="item.TEL_RESIDENCIAL_COMERCIAL" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="email_solicitante">Email</label>
+                    <input type="email" class="form-control" name="email_solicitante" id="email_solicitante" ng-model="item.EMAIL_SOLICITANTE"
+                           oninvalid="setCustomValidity('Email Inválido')" onchange="try{setCustomValidity('')}catch(e){}" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label for="solicitacao">* Solicitação</label>
+                    <textarea class="form-control" rows="3" name="solicitacao" id="solicitacao" ng-model="item.SOLICITACAO" maxlength="200" ng-disabled="disabledInputs()"></textarea>
+                    <span style="font-size: 11px;">{{item.SOLICITACAO.length}}  - Max 200 caracteres</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <button type="submit" ng-disabled="!(!!item.CODIGO_CONTRATO && !!item.CODIGO && !!item.VISTORIA_ACOMPANHADA
+                        && item.VISTORIADOR && item.HORARIO && item.DATA_VISTORIA && item.TIPO_VISTORIA && item.SOLICITANTE && item.TEL_RESIDENCIAL_SOLICITANTE
+                        && item.SOLICITACAO)" class="btn btn-default"
+                         ng-hide="btn_salvar_edicao()">Salvar Edição
+                </button>
+                <!-- So vai aparecer se a vistoria for diferente de aberta -->
+                <button type="submit" disabled ng-show="btn_salvar_edicao_disabilitado()" class="btn btn-default">Salvar Edição</button>
+            </div>
+            <div class="col-lg-4">
+                <p style="font-size: 12px;">* Campos Obrigatórios</p>
+            </div>
+        </div>
+
+        <!-- Modal de Aviso Caso O Sistema Identifique Que Existe Vistoria Cadastrada -->
+            <div class="modal fade" id="modalVistoriaCadastrada">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">Mensagem Do Sistema</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p style="font-size: 11px;">Já Existe Cadastrada no Sistema Uma Vistoria Como o Mesmo Número de Contrato.</p>
+                            <p style="font-size: 11px;">Tem Certeza Que Deseja Cadastrar Novamente ?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" ng-click="dataSave(item)">Sim, Salvar</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        <!-- Fim da Modal -->
+
+        <!-- Modal de Envio de Email Para o Solicitante da Vistoria -->
+        <div class="modal fade" id="modalEmail">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">Mensagem Do Sistema</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- CABEÇALHO COM OS DADOS DA MENSAGEM COMO DATA VISTORIA, SOLICITANTE, EMAIL, VISTORIADOR E HORARIO -->
+                            <input type="hidden" ng-model="item.data_vistoria">
+                            <input type="hidden" ng-model="item.solicitante">
+                            <input type="hidden" ng-model="item.email">
+                            <input type="hidden" ng-model="item.vistoriador">
+                            <input type="hidden" ng-model="item.horario">
+                        <!-- FIM DO CABECALHO -->
+                        <p style="font-size: 11px;">Deseja Que o Sistema Envie Um Email Informando o Solicitante Data e Hora de Sua Vistoria ?</p>
+                        <p>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="email_send_confirm"> <span style="font-size: 11px; font-weight: bold;"> Sim, enviar email ! </span>
+                                </label>
+                             </div>
+                        </p>
+                        <p>
+                            <button type="button" class="btn btn-sm" data-dismiss="modal" ng-hide="email_send_confirm" ng-click="btn_nao_enviar_email()">Não Enviar</button>
+                        </p>
+                        <!-- Text Area que aparece quando o usuario decide enviar email -->
+                        <p ng-show="email_send_confirm">
+                            <span style="font-size: 11px; padding: 10px;">Observação Para o Solicitante</span>
+                            <textarea class="form-control" rows="4" ng-model="item.observacao"></textarea>
+                        </p>
+
+                        <p ng-model="msn_erro_envio" ng-show="msn_erro_envio">
+                            <span style="font-size: 11px; color: red;"> O sistema não conseguiu enviar o email, tente novamente. Se persistir contate o administrador. </span>
+                        </p>
+                    </div>
+                    <div class="modal-footer" ng-show="email_send_confirm">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="bt_enviando_email">Cancelar</button>
+                        <button type="button" class="btn btn-primary" ng-click="sendEmail(item)" ng-model="bt_enviar_email" ng-hide="bt_enviando_email">Enviar</button>
+                        <button type="button" class="btn btn-primary" ng-model="bt_enviando_email" ng-show="bt_enviando_email" disabled="disabled">Enviando Email ...</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Fim da Modal -->
+
+        <!-- Modal Contendo Os Agendamentos de Vistorias -->
+        <div id="modalAgendaVistoria" class="modal fade bs-example-modal-lg ajusteModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content" >
+                    <div class="modal-header dialog-header-notify" style="height: 45px;">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-calendar"></i> AGENDA DE VISTORIA</h4>
+                    </div>
+                    <div class="row" style="padding: 10px;">
+                        <div class="col-lg-3">
+                            <label for="tel_comercial_solicitante">Busca Na Agenda </label>
+                            <input type="text" class="form-control form-group" ng-model="busca">
+                        </div>
+
+                        <!-- BUSCA POR DATA NA AGENDA DE VISTORIA -->
+                        <div class="col-lg-2">
+                            <label for="tel_comercial_solicitante">Data Inicial </label>
+                            <input type="text" class="form-control form-group" ng-model="dataInicial" ui-mask="99/99/9999" model-view-value="true" directiva-data>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <label for="tel_comercial_solicitante">Data Final </label>
+                            <input type="text" class="form-control form-group" ng-model="dataFinal" ui-mask="99/99/9999" model-view-value="true" directiva-data>
+                        </div>
+
+                        <div class="col-lg-2" style="margin-top: 25px">
+                            <button type="button" ng-click="buscaDadosFiltro(dataInicial, dataFinal)" ng-disabled="(!dataInicial && !dataFinal) || pesquisando()" class="btn btn-default"><i class="fa fa-search"></i> {{btn_pesquisa}}
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Contrato</th>
+                                    <th>Cod.Imóvel</th>
+                                    <th>Data Vistoria</th>
+                                    <th>Horário</th>
+                                    <th>Vistoriador</th>
+                                    <th>Tipo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr ng-repeat="vistoria in vistorias | filter:busca | limitTo: 10" style="font-size: 11px;">
+                                    <td> {{vistoria.CODIGO_CONTRATO}} </td>
+                                    <td> {{vistoria.CODIGO}} </td>
+                                    <td> {{vistoria.DATA_VISTORIA | date:'dd/MM/yyyy'}} </td>
+                                    <td> {{vistoria.HORARIO}} </td>
+                                    <td style="text-transform: capitalize"> {{vistoria.VISTORIADOR}} </td>
+                                    <td style="text-transform: capitalize"> {{vistoria.TIPO_VISTORIA}} </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fim Da Modal De Agendamento de Vistorias -->
+
+    </form>
+
+
+<!-- Modal contrato não encontrado -->
+<div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header dialog-header-notify">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> INFORMAÇÃO DO SISTEMA</h4>
+            </div>
+            <div class="modal-body">
+                <span style="font-size: 12px;">O SISTEMA NÃO ENCONTROU O CONTRATO SOLICITADO.</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim da modal contrato não encontrado -->
+
+<!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+<div class="modal fade ajusteModal" id="modalAcoes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header-confirm">
+                <button type="button" class="close" data-dismiss="modal" style="margin-right: 20px; margin-top: 10px;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" style="padding-left: 30px; padding-top: 10px;"><i class="fa fa-check-square-o 2x"> </i> Janela de Confirmação</h4>
+            </div>
+            <div class="modal-body">
+                <span style="font-weight: bold">Tem certeza que deseja {{acao}} a vistoria ?</span>
+            </div>
+            <div class="modal-footer">
+
+                <span style="font-size: 11px;" ng-show="processando()"><img src="/image/159.gif"/> Processando requisição ...</span>
+                <div ng-hide="btnActions()">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-primary" ng-click="actionVistoria(id_vistoria, action)">Sim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+
+</div>
+
+
+

@@ -1,0 +1,112 @@
+
+body {
+    padding-top: 70px;
+
+}
+.hero-spacer {
+    margin-top: 50px;
+}
+.hero-feature {
+    margin-bottom: 30px;
+}
+.container {
+    width: 100% !important;
+}
+.navbar {
+    height: 45px !important;
+    min-height: 10px !important;
+    background-color: #555555;
+}
+.dropdown-toggle:active, .open .dropdown-toggle {
+    background:#444444 !important;
+    height: 45px !important;
+}
+footer {
+    margin: 50px 0;
+}
+
+/***** MENUS *****/
+
+.ajuste-menu {
+    margin: 0px !important;
+    padding-top: 10px !important;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+/*********** AJUSTA OS INPUTS *****************/
+.div-little {
+    width: 150px;
+}
+
+.input-medium {
+    height: 30px;
+}
+
+input[type="text"] {
+    font-size: 11px;
+}
+
+/************ CUSTOM MODALS ******************/
+.dialog-header-error { background-color: #d2322d; }
+.dialog-header-wait { background-color: #428bca; }
+.modal-header-notify { background-color: #eeeeee; height: 50px; color: #000000}
+.modal-header-confirm { background-color: #333333; height: 50px; }
+.modal-title { color: #ffffff}
+
+::-webkit-scrollbar { width: 5px; height: 3px;}
+::-webkit-scrollbar-button {  background-color: #666; }
+::-webkit-scrollbar-track {  background-color: #999;}
+::-webkit-scrollbar-track-piece { background-color: #ffffff;}
+::-webkit-scrollbar-thumb { height: 50px; background-color: #666; border-radius: 3px;}
+::-webkit-scrollbar-corner { background-color: #999;}
+::-webkit-resizer { background-color: #666;}
+
+
+

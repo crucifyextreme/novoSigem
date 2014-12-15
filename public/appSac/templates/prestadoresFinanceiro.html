@@ -1,0 +1,546 @@
+<style>
+
+    input[type="text"] {
+        color: #666666;
+    }
+
+</style>
+
+<div ng-controller="ControllerSac">
+    <div class="row">
+        <div class="col-lg-3" style="margin-left: 15px;">
+            <div class="form-group">
+                <label for="pesquisa"><i class="fa fa-search"></i>  Pesquisa de Dados </label>
+                <input type="text" class="form-control" id="pesquisa" ng-model="pesquisa">
+            </div>
+        </div>
+        <div class="col-lg-6" style="margin-left: 150px; margin-top: 22px;">
+            <ol class="breadcrumb" style="background-color: #E98531;">
+                <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-money"></i> &nbsp;FINANCEIRO PRESTADOR</li>
+            </ol>
+        </div>
+    </div>
+
+    <table class="table table-hover" ng-init="financeiroPrestadores()">
+        <thead>
+        <tr style="font-size: 12px; font-weight: bold">
+            <th>Contrato</th>
+            <th>Cod.Imóvel</th>
+            <th>Prestador</th>
+            <th title="Data Provisionamento">Provisionamento</th>
+            <th title="Responsável Pelo Provisionamento">Rp Provisionamento</th>
+            <th title="Quantidade Parcelas">Qtd. Parcelas</th>
+            <th title="Responsável Pelo Pagamento">Rp Pagamento</th>
+            <th>Prov. Financeiro</th>
+            <th>Data Prov. Fin</th>
+            <th>Status</th>
+            <th> - </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr style="font-size: 11px;" ng-repeat="financeiro in financeiros | filter:pesquisa">
+            <td> {{financeiro.CODIGO_CONTRATO}} </td>
+            <td> {{financeiro.CODIGO}} </td>
+            <td style="text-transform:uppercase"> {{financeiro.PRESTADOR}} </td>
+            <td> {{financeiro.DATA_BLOQUEIO | date: 'dd/MM/yyyy'}} </td>
+            <td style="text-transform: capitalize"> {{financeiro.RP_PROVISIONAMENTO}} </td>
+            <td> <span style="margin-left: 30px;"> {{financeiro.QTD_PARCELAS}} </span> </td>
+            <td>
+                <span style="margin-left: 30px;">
+                    <a href="" ng-click="verDetalhesFinanceiroRpPagamamento(financeiro.ID_FINANCEIRO)" ng-if="financeiro.DATA_REAL_PARCELA_1 != null" title="Ver detalhes"> <i class="fa fa-money"></i> </a>
+                    <span ng-if="financeiro.DATA_REAL_PARCELA_1 == null || financeiro.DATA_REAL_PARCELA_1 == '0000-00-00' "> - </span>
+                </span>
+            </td>
+
+            <td>
+
+                <!-- LINK PARA PROVISIONAMENTO OU SEJA O STATUS DE PROVISIONAMENTO ESTA NULL OU EM BRANCO -->
+                <a href="" style="margin-left: 40px;" title="Provisionar pagamento" ng-click="confirmacaoProvisionamento(financeiro.ID_FINANCEIRO)"
+                   ng-if="financeiro.STATUS_FINANCEIRO == null && financeiro.STATUS_PROVISIONAMENTO_FINANCEIRO == null || financeiro.STATUS_PROVISIONAMENTO_FINANCEIRO == '' ">
+                    <i class="fa fa-flag"></i>
+                </a>
+                <!-- STATUS JA PROVISIONADO -->
+                <span ng-if="financeiro.STATUS_PROVISIONAMENTO_FINANCEIRO == 'provisionado' " style="text-transform: capitalize; font-weight: bold; color: #3c763d; margin-left: 15px;">
+                    {{financeiro.STATUS_PROVISIONAMENTO_FINANCEIRO}}
+                </span>
+
+            </td>
+            <td>
+                <span ng-if="financeiro.DATA_PROVISIONAMENTO_FINANCEIRO != null "> {{financeiro.DATA_PROVISIONAMENTO_FINANCEIRO | date:'dd/MM/yyyy'}} </span>
+                <span ng-if="financeiro.DATA_PROVISIONAMENTO_FINANCEIRO == null " style="margin-left: 25px;"> - </span>
+            </td>
+            <td ng-if="financeiro.STATUS_FINANCEIRO == null" style="font-weight: bold; color: #c77405"> Aberta </td>
+            <td ng-if="financeiro.STATUS_FINANCEIRO == 'finalizada' " style="text-transform: capitalize; font-weight: bold; color: #3c763d"> {{financeiro.STATUS_FINANCEIRO}} </td>
+            <td>
+                <a href="" ng-click="abreModalFinanceiraPagamento(financeiro.ID_FINANCEIRO)"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </a>
+                <!-- LINK DE GERAÇÃO DE RECIBO -->
+                <a href="" ng-if="financeiro.STATUS_FINANCEIRO == 'finalizada' " ng-click="gerarRecido(financeiro.ID_FINANCEIRO)">Recibo</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+
+    <!-- MODAL FINANCEIRA DO PRESTADOR -->
+    <div class="modal fade bs-example-modal-lg ajusteModal" id="abreModalFinanceiraPagamento" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="row" style="padding-left: 10px; padding-top: 10px">
+                    <div class="col-lg-6">
+                        <i class="fa fa-wrench fa-fw fa-2x"></i> <span style="text-transform: uppercase; font-weight: bold">{{financeiroPrestador.PRESTADOR}}</span>
+                    </div>
+                </div>
+                <hr style="margin: 10px; padding: 0px;" />
+                <div class="row" style=" padding: 10px;">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label>SERVIÇO EXECUTADO</label>
+                            <p style="font-size: 11px;">{{financeiroPrestador.TIPO_SERVICO_EXECUTAR}}</p>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin: 0px; padding: 0px;" />
+                <!-- MÃO DE OBRA -->
+                <div class="row" style="padding-left: 10px; padding-bottom: 10px;">
+                    <div class="col-lg-2">
+                        <label style="font-size: 12px;">Mão Obra</label>
+                        <p style="font-size: 11px;"> {{financeiroPrestador.V_MAO_OBRA}} </p>
+                    </div>
+                    <!-- MATERIAL -->
+                    <div class="col-lg-2">
+                        <label style="font-size: 12px;">Material</label>
+                        <p style="font-size: 11px;"> {{financeiroPrestador.V_MATERIAL}} </p>
+                    </div>
+                    <!-- QTD PARCELAS -->
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label style="font-size: 12px;">Parcelas</label>
+                            <p style="font-size: 11px;"> {{financeiroPrestador.QTD_PARCELAS}} </p>
+                        </div>
+                    </div>
+                    <!-- PROVISIONAMENTO -->
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label style="font-size: 12px;">Provisionamento</label>
+                            <p style="font-size: 11px;"> {{financeiroPrestador.DATA_PROVISIONAMENTO | date:'dd/MM/yyyy'}} </p>
+                        </div>
+                    </div>
+                    <!-- BLOQUEIO -->
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label style="font-size: 12px;">Bloqueio</label>
+                            <p style="font-size: 11px;"> {{financeiroPrestador.DATA_BLOQUEIO | date:'dd/MM/yyyy'}} </p>
+                        </div>
+                    </div>
+                    <!-- TX SERVIÇO -->
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label style="font-size: 12px;">1 Parcela</label>
+                            <p style="font-size: 11px;">  {{financeiroPrestador.DATA_PARCELA_1 | date:'dd/MM/yyyy'}} </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- VALORES PAGAMENTO -->
+                <span style="font-weight: bold; margin-left: 10px;">VALORES PARA PAGAMENTO</span>
+                <hr style="margin: 0px; padding: 0px;" />
+
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS == 1 ||  financeiroPrestador.QTD_PARCELAS > 1">
+                        <label style="font-size: 12px;">Parc 1</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_1}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 1 ">
+                        <label style="font-size: 12px;">Parc 2</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_2}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 2 ">
+                        <label style="font-size: 12px;">Parc 3</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_3}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 3 ">
+                        <label style="font-size: 12px;">Parc 4</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_4}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 4 ">
+                        <label style="font-size: 12px;">Parc 5</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_5}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 5 ">
+                        <label style="font-size: 12px;">Parc 6</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_6}}</p>
+                    </div>
+                </div>
+
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 6 ">
+                        <label style="font-size: 12px;">Parc 7</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_7}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 7 ">
+                        <label style="font-size: 12px;">Parc 8</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_8}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 8 ">
+                        <label style="font-size: 12px;">Parc 9</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_9}}</p>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 9 ">
+                        <label style="font-size: 12px;">Parc 10</label>
+                        <p style="font-size: 11px;">{{financeiroPrestador.V_PARCELA_10}}</p>
+                    </div>
+                </div>
+
+                <!-- DATAS PAGAMENTO -->
+                <span style="font-weight: bold; margin-left: 10px;">DATAS PARA PAGAMENTO(PREVISÃO)</span>
+                <hr style="margin: 0px; padding: 0px;" />
+
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS == 1 || financeiroPrestador.QTD_PARCELAS > 1 ">
+                        <label>Parc 1</label>
+                        <!-- SE A DATA_REAL_PARCELA_1 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_REAL_PARCELA_1" ui-mask="99/99/9999"  model-view-value="true" directiva-data ng-hide="dataParcela1Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_1 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_REAL_PARCELA_1" disabled ng-show="dataParcela1Show"/>
+
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 1 ">
+                        <label>Parc 2</label>
+                        <!-- SE A DATA_REAL_PARCELA_2 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_2" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela2Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_2 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_2" disabled ng-show="dataParcela2Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 2 ">
+                        <label>Parc 3</label>
+                        <!-- SE A DATA_REAL_PARCELA_3 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_3" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela3Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_3 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_3" disabled ng-show="dataParcela3Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 3 ">
+                        <label>Parc 4</label>
+                        <!-- SE A DATA_REAL_PARCELA_4 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_4" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela4Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_4 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_4" disabled ng-show="dataParcela4Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 4 ">
+                        <label>Parc 5</label>
+                        <!-- SE A DATA_REAL_PARCELA_5 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_5" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela5Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_5 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_5" disabled ng-show="dataParcela5Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 5 ">
+                        <label>Parc 6</label>
+                        <!-- SE A DATA_REAL_PARCELA_6 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_6" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela6Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_6 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_6" disabled ng-show="dataParcela6Show"/>
+                    </div>
+                </div>
+
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 6 ">
+                        <label>Parc 7</label>
+                        <!-- SE A DATA_REAL_PARCELA_7 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_7" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela7Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_7 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_7" disabled ng-show="dataParcela7Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 7 ">
+                        <label>Parc 8</label>
+                        <!-- SE A DATA_REAL_PARCELA_8 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_8" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela8Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_8 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_8" disabled ng-show="dataParcela8Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 8 ">
+                        <label>Parc 9</label>
+                        <!-- SE A DATA_REAL_PARCELA_9 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_9" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela9Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_9 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_9" disabled ng-show="dataParcela9Show"/>
+                    </div>
+
+                    <div class="col-lg-2" ng-if="financeiroPrestador.QTD_PARCELAS > 9 ">
+                        <label>Parc 10</label>
+                        <!-- SE A DATA_REAL_PARCELA_10 FOR IGUAL A NULL -->
+                        <input type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_10" ui-mask="99/99/9999" model-view-value="true" directiva-data ng-hide="dataParcela10Hide"/>
+                        <!-- SE A DATA_REAL_PARCELA_10 FOR DIFERENTE A NULL -->
+                        <input date-directive-filter type="text" class="form-control" ng-model="financeiroPrestador.DATA_PARCELA_10" disabled ng-show="dataParcela10Show"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- BOTÃO DE ATUALIZAR DADOS DO PRESTADOR -->
+                    <div class="col-lg-2" style="margin: 20px">
+
+
+                        <button type="button" class="btn btn-default" ng-click="atualizaDadosPagamentoPrestador(financeiroPrestador)" >
+                            <span class="glyphicon glyphicon-floppy-saved"></span> Salvar Dados
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL FINANCEIRA -->
+
+    <!-- MODAL COM OS DETALHES OS NOMES DOS RESPONSAVEIS POR LIBERAREM DO DINHEEIRO DO PRESTADOR -->
+    <div class="modal fade ajusteModal" id="modalDetalhesRpPagamentoFinanceiro" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> RESPONSÁVEL LIBERAÇÃO PAGAMENTO</h4>
+                </div>
+                <div class="row" style="padding-left: 10px; padding-top: 10px">
+                    <div class="col-lg-2">
+                        <label>Parc 1</label>
+                            <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_1}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_2 != null">
+                        <label>Parc 2</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_2}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_3 != null">
+                        <label>Parc 3</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_3}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_4 != null">
+                        <label>Parc 4</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_4}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_5 != null">
+                        <label>Parc 5</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_5}}</p>
+                    </div>
+                </div>
+
+                <div class="row"  ng-if="rpFin.RP_FINANCEIRO_PARCELA_6 != null">
+                    <div class="col-lg-12">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="row" style="padding-left: 10px; padding-top: 10px">
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_6 != null">
+                        <label>Parc 6</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_6}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_7 != null">
+                        <label>Parc 7</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_7}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_8 != null">
+                        <label>Parc 8</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_8}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_9 != null">
+                        <label>Parc 9</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_9}}</p>
+                    </div>
+                    <div class="col-lg-2" ng-if="rpFin.RP_FINANCEIRO_PARCELA_10 != null">
+                        <label>Parc 10</label>
+                        <p style="font-size: 11px; text-transform: capitalize"> {{rpFin.RP_FINANCEIRO_PARCELA_10}}</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL COM PARA A GERAÇÃO DE RECIBO -->
+    <div class="modal fade ajusteModal" id="modalGeracaoRecibo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> GERAÇÃO RECIBO - <span style="text-transform: uppercase"> {{PRESTADOR}} </span></h4>
+                </div>
+                <div class="row" style="padding-left: 10px; padding-top: 10px">
+                    <div class="col-lg-4">
+                        <span style="font-weight: bold; font-size: 11px;" ng-hide="msn_informe_parcelas"> Informe as Parcelas </span>
+
+                        <span style="font-size: 11px" ng-show="msn_recibo_gerado"> Recibo gerado ! </span>
+
+                    </div>
+                    <div class="col-lg-5">
+                        <span style="font-size: 11px; padding-left: 60px;" ng-show="gerando_recibo">{{msn_geracao_recibo}}</span>
+
+                        <span style="font-size: 11px; padding-left: 60px;" ng-show="impressao_recibo"><i class="fa fa-print"></i> <a href="" ng-click="imprimirRecibo()"> Imprimir </a></span>
+                        <span style="font-size: 11px; padding-left: 10px;" ng-show="impressao_recibo"><i class="fa fa-eraser"></i> <a href="" ng-click="apagarRecibos()"> Apagar tudo </a></span>
+                        <span style="font-size: 11px; padding-left: 10px;" ng-show="msn_apagando_recibo">Aguarde, apagando ...</span>
+                    </div>
+                    <div class="col-lg-2" ng-hide="link_gerar_recibo">
+                        <a href="" style="float: right; font-size: 11px;" ng-click="gerar(parcela)" ng-show="parcela.V_PARCELA_1 || parcela.V_PARCELA_1 || parcela.V_PARCELA_3 || parcela.V_PARCELA_4
+                        || parcela.V_PARCELA_5 || parcela.V_PARCELA_6 || parcela.V_PARCELA_7 || parcela.V_PARCELA_8 || parcela.V_PARCELA_9 || parcela.V_PARCELA_10"> Gerar </a>
+                    </div>
+                </div>
+                <div ng-hide="parcelas">
+                    <!-- PARCELA UM -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;">
+                        <div class="col-lg-3" style="font-size: 11px;margin-top: 4px;">
+                            Parcela 1
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;"> R$ {{V_PARCELA_1}} </span>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_1" ng-disabled="desabilitarCheckBox">
+                        </div>
+                    </div>
+                    <!-- PARCELA DOIS -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_2 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 2
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_2}} </span>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_2">
+                        </div>
+
+                    </div>
+                    <!-- PARCELA TRES -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_3 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 3
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_3}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_3">
+                        </div>
+                    </div>
+                    <!-- PARCELA QUATRO -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_4 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 4
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_4}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_4">
+                        </div>
+                    </div>
+                    <!-- PARCELA CINCO -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_5 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 5
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_5}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_5">
+                        </div>
+                    </div>
+                    <!-- PARCELA SEIS -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_6 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 6
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_6}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_6">
+                        </div>
+                    </div>
+                    <!-- PARCELA SETE -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_7 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 7
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_7}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_7">
+                        </div>
+                    </div>
+                    <!-- PARCELA OITO -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_8 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 8
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_8}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_8">
+                        </div>
+                    </div>
+                    <!-- PARCELA NOVE -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_9 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 9
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R${{V_PARCELA_9}} </span>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="checkbox" ng-model="parcela.V_PARCELA_9">
+                        </div>
+                    </div>
+                    <!-- PARCELA DEZ -->
+                    <div class="row" style="padding-left: 10px; padding-top: 10px; margin-bottom: 20px;" ng-if="V_PARCELA_10 != null">
+                        <div class="col-lg-3" style="font-size: 11px; margin-top: 4px;">
+                            Parcela 10
+                        </div>
+                        <div class="col-lg-3">
+                            <span style=" font-size: 11px;">R$ {{V_PARCELA_10}} </span>
+                            <div class="col-lg-2">
+                                <input type="checkbox" ng-model="parcela.V_PARCELA_10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ERRO DE PROCESSAMENTO DO SISTEMA -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

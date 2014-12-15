@@ -1,0 +1,92 @@
+<div ng-controller="ControllerSac" ng-init="initData()">
+
+    <div class="row">
+        <div class="col-lg-4" style="margin-top: 22px;">
+            <ol class="breadcrumb" style="background-color: #E98531;">
+                <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-print "></i> &nbsp;IMPRESSÃO DE RECIBOS</li>
+            </ol>
+        </div>
+        <div class="col-lg-4" style="margin-top: 25px;" ng-show="impressaoRecibos">
+            <a href="" ng-click="imprimirRecibo()" target="_blank"  style="color: #000000; font-size: 11px;"><i class="fa fa-print "></i> Imprmir Recibos</a>
+        </div>
+    </div>
+
+
+    <span style="font-size: 11px;">{{msn_nenhum_recibo}}</span>
+    <div ng-init="carregaTodosRecibosUsuario()" ng-hide="tabela_recibos">
+        <table class="table table-hover">
+            <thead>
+            <tr style="font-size: 12px;">
+                <th>Data Geração</th>
+                <th>Responsável</th>
+                <th>Prestador</th>
+                <th>Valor</th>
+                <th> - </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="recibo in recibos" style="font-size: 11px;">
+                <td> {{recibo.DATA_CRIACAO | date:"dd/MM/yyyy"}} </td>
+                <td style="text-transform: capitalize"> {{recibo.RP_RECIBO}} </td>
+                <td style="text-transform: capitalize"> {{recibo.PRESTADOR}} </td>
+                <td style="text-transform: capitalize"> {{recibo.TOTAL_RECIBO}} </td>
+                <td>
+                    <a href="" style="color: #000000;" ng-click="deletarRecibo(recibo.ID_RECIBO)">
+                        <i class="fa fa-trash-o"></i> <span style="font-size: 10px;"> Deletar</span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- JANELAS MODAIS -->
+
+    <!-- MODAL ERRO DE PROCESSAMENTO DO SISTEMA -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Exclusao -->
+    <div class="modal fade ajusteModal" id="modalExcluir" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header-confirm">
+                    <button type="button" class="close" data-dismiss="modal" style="margin-right: 20px; margin-top: 10px;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="padding-left: 30px; padding-top: 10px;"><i class="fa fa-check-square-o 2x"> </i> Janela de Confirmação</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-weight: bold">Tem certeza que deseja excluir este recibo ?</span>
+                </div>
+                <div class="modal-footer">
+                    <span style="font-size: 11px;" ng-show="processando"><img src="/image/159.gif"/> Processando requisição ...</span>
+                    <div ng-hide="btnModalExclusao">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                        <button type="button" class="btn btn-primary" ng-click="excluir(id)">Sim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim da Modal Exclusão -->
+
+    <!-- FIM DAS JANELAS MODAIS-->
+
+</div>

@@ -1,0 +1,8 @@
+database:
+    driver: pdo_mysql
+    host: 127.0.0.1
+    dbname: project_people
+    user: root
+    password: 392533
+    charset: utf8
+    port: 3306

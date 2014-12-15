@@ -1,0 +1,84 @@
+<!-- print_r( $dados);-->
+<!--
+<script type="text/javascript">
+window.onload=function(){window.print();}
+</script>-->
+<html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+
+    <style type="text/css">
+        .mypg {
+            width: 672px;
+            height: 1000px;
+            margin: 2px auto 2px auto;
+            background: #f9f9f9;
+            padding: 10px;
+            font-size: 11px;
+            color: #000000;
+        }
+
+        @page {
+            size: auto;
+            margin: 0mm;
+        }
+    </style>
+
+</head>
+
+<body style="font: 20px times new roman; color: rgb(96,20,64);">
+
+<div class="mypg">
+    {% for key,dado in dados %}
+    <div style="font-weight: bold; color: #000000; font-size: 20px; margin-left: 300px;">RECIBO</div>
+    <div style="width: 100%; border: 1px solid #000000; padding-left: 5px;">
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Recebi(emos) de: </span><?php echo '<span style="text-decoration:underline; font-size:14px"> {{ dado.NOME }}</p>
+        </div>
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Endereço: </span><span style="font-size: 14px;">{{ dado.ENDERECO }}</span>  </p>
+        </div>
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">A importância de: <span style="font-weight: normal; font-size: 16px; text-transform: capitalize">{{ dado.TOTAL_RECIBO }}</span> </span></p>
+        </div>
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Referente a: </span><span style="font-size: 13px;">{{ dado.TIPO_SERVICO_EXECUTAR }}</span> </p>
+        </div>
+    </div>
+
+    <div style="width: 100%; border: 1px solid #000000; height:30px; padding-left: 5px; margin-top: 5px; padding-top: 10px;">
+        <span style="font-weight: normal; font-size: 15px; font-weight: bold"> Montes Claros,  {{ dado.DATA_RECIBO }} </span>
+    </div>
+
+    <div style="width: 100%; border: 1px solid #000000; padding-left: 5px; margin-top: 5px;">
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Emitente: </span><span style="font-size: 16px;">{{ dado.PRESTADOR }}</span> </p>
+        </div>
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Endereço: </span>  </p>
+        </div>
+
+        <div>
+            <p> <span style="font-size: 16px; font-weight: bold">Assinatura: ________________________________________________</span> </p>
+        </div>
+    </div>
+
+    <img src="/icones/tesoura.png" style="margin-top: 5px;" />-------------------------------------------------------------------
+    ---------------------------------------------
+
+    {% if key > 0 and key %2 == 0 %}
+    <br /><br /><br /><br/><br/><br/><br/><br/>
+    {% endif %}
+    <br />
+    {% endfor %}
+</div>
+
+</body>
+
+</html>

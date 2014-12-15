@@ -1,0 +1,92 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <style type="text/css">
+        .mypg {
+            width: 672px;
+            height: 1000px;
+            margin: 2px auto 2px auto;
+            background: #f9f9f9;
+            padding: 10px;
+            font-size: 11px;
+            color: #000000;
+        }
+
+        @page {
+            size: auto;
+            margin: 0mm;
+        }
+        @media print{@page {size: portrait}}
+    </style>
+
+</head>
+
+<body style="font: 20px times new roman; color: rgb(96,20,64);">
+
+<div class="mypg">
+
+    <div style="width: 100%; height: 80px;">
+        <img src="http://localhost:8080/image/cabecalho_cartas.jpg">
+    </div>
+
+    <div style="margin-top: 100px;">
+        <span style="font-size: 14px;">Montes Claros-MG,  {{ DADOS_DATA }} </span>
+    </div>
+
+    <div style="margin-top: 25px;">
+        <span style="font-size: 14px;">
+            Ilmo(a) Sr(a)
+             <p style="margin: 0px; padding: 1px">{{ DADOS_CARTA[0]['NOME_CLIENTE'] }}</p>
+             <p style="margin: 0px; padding: 1px"> {{ DADOS_CARTA[0]['ENDERECO'] }} </p>
+             <p style="margin: 0px; padding: 1px"> {{ DADOS_CARTA[0]['CIDADE'] }}  -  {{ DADOS_CARTA[0]['ESTADO'] }} CEP  {{ DADOS_CARTA[0]['CEP'] }} </p>
+        </span>
+    </div>
+
+    <div style="margin-top: 10px; font-weight: bold; font-size: 14px">
+        <p style="margin: 0px; padding: 1px"> REF.: NOTIFICAÇAO DEBITO ALUGUEL EM ATRASO </p>
+        <p style="margin: 0px; padding: 1px"> CONTRATO DE LOCAÇÃO   {{ DADOS_CARTA[0]['CODIGO_CONTRATO'] }} </p>
+        <p style="margin: 0px; padding: 1px"> IMÓVEL :    {{ DADOS_CARTA[0]['ENDERECO'] }} {{ DADOS_CARTA[0]['BAIRRO'] }}  - {{ DADOS_CARTA[0]['CEP'] }}  {{ DADOS_CARTA[0]['CIDADE'] }}  -  {{ DADOS_CARTA[0]['ESTADO'] }} </p>
+
+    </div>
+
+    <div style="margin-top: 20px; font-size: 14px">
+        <p>Prezado(a) senhor(a),</p>
+
+        <p>Pela presente, vimos notificar-lhe que encontra(m) pendente(s) em nossos registros o(s) aluguel(eis) vencido(s) e ainda não quitado(s), abaixo relacionados, que são de sua responsabilidade, na qualidade de locatário de imóvel por nós administrado.</p>
+
+        <p> ####### ATENÇÃO, ALTERAR AQUI ######</p>
+
+        <p>Solicitamos imediata quitação desta(s) pendencia(s), sob pena de tratarmos deste assunto junto aos seus fiadores.</p>
+
+        <p>Ao receber esta correspondencia, caso V.Sa. tenha quitado o(s) débito(s) relacionado(s), gentileza desconsiderar este aviso.</p>
+
+
+        <p style="margin-left: 150px;">Certos da atenção que V.Sa. dispensará a esta, aguardamos.</p>
+
+        <p style="margin-left: 150px;">Atenciosamente,</p>
+    </div>
+
+    <div style="margin-top: 30px; margin-left:170px; font-size: 14px;">
+        <p style="margin-bottom: 0px;">_________________________________</p>
+        <p style="margin-left: 35px; font-weight: bold;margin-bottom: 0px;margin-top: 0px;">MASTER RSM IMÓVEIS</p>
+        <p style="margin-left: 55px; padding: 0px; margin-top: 0px;">Dep. de Negociações</p>
+    </div>
+
+    <div style="margin-top: 130px;">
+        <p style="margin-bottom: 0px; padding: 0px;">____________________________________________________________________________________________________</p>
+        <p style="font-size: 10px; margin-top: 5px; margin-left: 10px; margin-bottom: 0px;"> RUA SÃO ROBERTO, N° 20 –  BAIRRO TODOS OS SANTOS – CEP 39400-121 – PABX (38)3690-3344 – MONTES CLAROS / MG </p>
+        <p style="margin-top: 0px;"> site: www.masterimoveis.com.br
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;e-mail: master@masterimoveis.com.br </p>
+    </div>
+
+</div>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,248 @@
+<style>
+
+    input[type="text"] {
+        color: #666666;
+    }
+
+</style>
+
+<div ng-controller="ControllerSac">
+    <form role="form" ng-init="initData()" ng-submit="gravarChamado(item)">
+
+    <div class="row">
+        <div class="col-lg-2" style=" width: 150px;">
+            <div class="form-group">
+                <label for="contrato">* Contrato</label>
+                <input type="text" class="form-control" id="contrato" ng-model="item.CODIGO_CONTRATO" ng-blur="consulta_dados_contrato(item.CODIGO_CONTRATO)">
+            </div>
+        </div>
+
+        <div class="col-lg-1" style="width: 35px; padding-left: 0px; margin-top: 28px;">
+           <a href="" ng-click="abrirModalContratos()"> <img src="/icones/search_icon.png" /> </a>
+        </div>
+
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="cod_imovel">* Cod.Imóvel</label>
+                <input type="text" class="form-control" name="cod_imovel" id="cod_imovel" ng-model="item.CODIGO" disabled>
+            </div>
+        </div>
+        <div class="col-lg-2" style="margin-top: 28px; width: 150px;">
+            <span style="font-size: 10px;" ng-show="pesquisando()" ><img src="/image/159.gif" height="13" width="13"/> Pesquisando ...</span>
+        </div>
+
+        <div class="col-lg-5" style="margin-top: 22px;">
+            <ol class="breadcrumb" style="background-color: #E98531">
+                <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-users fa"></i> &nbsp;ABERTURA DE NOVO CHAMADO</li>
+            </ol>
+        </div>
+
+
+
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="end_imovel">* Endereço Imóvel</label>
+                <input type="text" class="form-control" name="end_imovel" id="end_imovel" ng-model="item.ENDERECO" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label for="bairro">* Bairro</label>
+                <input type="text" class="form-control" name="bairro" id="bairro" ng-model="item.BAIRRO" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label for="prioridade">* Prioridade</label>
+                <select class="form-control" name="prioridade" id="prioridade" ng-model="item.PRIORIDADE">
+                    <option value="">Informe</option>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label for="proprietario">* Proprietário</label>
+                <input type="text" class="form-control" name="proprietario" id="proprietario" ng-model="item.NOME" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+
+        <div class="col-lg-1">
+            <div class="form-group">
+                <label for="ddd">DDD</label>
+                <input type="text" class="form-control" name="ddd" id="ddd" ng-model="item.DDD" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="tel_residencial">Tel.Residencial</label>
+                <input type="text" class="form-control" name="tel_residencial" id="tel_residencial" ng-model="item.RESIDENCIAL" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="tel_celular">Tel.Celular</label>
+                <input type="text" class="form-control" name="tel_celular" id="tel_celular" ng-model="item.CELULAR" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="tel_comercial">Tel.Comercial</label>
+                <input type="text" class="form-control" name="tel_comercial" id="tel_comercial" ng-model="item.COMERCIAL" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" name="email" id="email" ng-model="item.E_MAIL" ng-disabled="disabled_inputs">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="solicitante">* Solicitante</label>
+                <input type="text" class="form-control" name="solicitante" id="solicitante" ng-model="item.SOLICITANTE">
+            </div>
+        </div>
+
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="tel_residencial_solicitante">* Tel.Residencial</label>
+                <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_residencial_solicitante" id="tel_residencial_solicitante" ng-model="item.TEL_RESIDENCIAL_SOLICITANTE" model-view-value="true">
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="tel_comercial_solicitante">Tel.Comercial</label>
+                <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_comercial_solicitante" id="tel_comercial_solicitante" ng-model="item.TEL_COMERCIAL_SOLICITANTE" model-view-value="true">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label for="email_solicitante">Email</label>
+                <input type="email" class="form-control" name="email_solicitante" id="email_solicitante" ng-model="item.EMAIL_SOLICITANTE"
+                       oninvalid="setCustomValidity('Email Inválido')" onchange="try{setCustomValidity('')}catch(e){}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="form-group">
+                <label for="solicitacao">* Solicitação</label>
+                <textarea class="form-control" rows="3" name="solicitacao" id="solicitacao" ng-model="item.SOLICITACAO" maxlength="255"></textarea>
+                <span style="font-size: 11px;">{{item.SOLICITACAO.length}}  - Max 255 caracteres</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2">
+            <button type="submit" ng-disabled="!(!!item.CODIGO_CONTRATO && !!item.CODIGO && !!item.ENDERECO && !!item.BAIRRO && !!item.PRIORIDADE
+                        && !!item.NOME && item.SOLICITANTE && item.TEL_RESIDENCIAL_SOLICITANTE
+                        && item.SOLICITACAO)" class="btn btn-default"
+                    ><span class="glyphicon glyphicon-floppy-saved"></span> Salvar Dados
+            </button>
+        </div>
+        <div class="col-lg-4">
+            <p style="font-size: 12px;">* Campos Obrigatórios</p>
+        </div>
+    </div>
+
+    </form>
+
+
+    <!-- Modal contrato não encontrado -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> INFORMAÇÃO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;">O SISTEMA NÃO ENCONTROU O CONTRATO SOLICITADO.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal erro de processamento do sistema -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL LISTA OS ENDERECOS E CONTRATOS -->
+    <div id="modalListaEnderecos" class="modal fade bs-example-modal-lg ajusteModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header dialog-header-notify" style="height: 45px;">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-search"></i> PESQUISA DE CONTRATOS </h4>
+                </div>
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-4">
+                        <label for="tel_comercial_solicitante">Busca </label>
+                        <input type="text" class="form-control form-group" ng-model="busca">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Contrato</th>
+                                <th>Cod.Imóvel</th>
+                                <th>Endereço</th>
+                                <th>Bairro</th>
+                                <th> - </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr ng-repeat="dado in dados | filter:busca | limitTo: 10" style="font-size: 11px;">
+                                <td> {{dado.CODIGO_CONTRATO}} </td>
+                                <td> {{dado.CODIGO}} </td>
+                                <td> {{dado.ENDERECO}} </td>
+                                <td> {{dado.BAIRRO}} </td>
+                                <td>
+                                    <a href="" ng-click="consulta_dados_contrato(dado.CODIGO_CONTRATO)"> IMP </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL LISTA OS ENDERECOS E CONTRATOS -->
+</div>

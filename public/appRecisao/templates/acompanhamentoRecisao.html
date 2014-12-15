@@ -1,0 +1,314 @@
+
+
+<div ng-controller="ControllerRecisao" ng-init="iniciaDados()">
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="contrato">Contrato</label>
+            <input type="text" style="height: 30px;" class="form-control" id="contrato" ng-model="item.CODIGO_CONTRATO" ng-keyup="capturaF2($event)" ng-blur="consultaContrato(item.CODIGO_CONTRATO)" >
+        </div>
+        <div class="col-md-1" style="margin-top: 28px;width: 20px; padding: 0px;">
+            <a href="" ng-click="pesquisaContrato()" title="Pesquisa contrato" ng-hide="imovelSemContrato"> <img src="/icones/search_icon.png" /> </a>
+        </div>
+        <div class="col-md-2">
+            <label for="cod_imovel">Cod.Imovel</label>
+            <input type="text" style="height: 30px;" class="form-control" id="cod_imovel" ng-model="item.CODIGO"  disabled >
+        </div>
+        <div class="col-md-1" style="margin-top: 28px; padding: 0px; width: 100px;">
+            <span style="font-size: 10px;" ng-show="msn_processando"><img src="/image/159.gif" height="15" width="15"/> Pesquisando ...</span>
+        </div>
+        <div class="col-md-3" style="margin-top: 23px;">
+            <ol class="breadcrumb" style="background-color: #E98531">
+                <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-phone"></i> &nbsp;HISTÓRICO DE COBRANÇA</li>
+            </ol>
+        </div>
+
+        <div class="col-md-3" style="margin-top: 35px;">
+            <a href="" style="float: right; margin-right: 20px; color: #000000" ng-click="registrarCobranca(item)" ng-show="registro_cobranca"><i class="fa fa-phone"></i> Registrar cobrança </a>
+            <a href="" style="float: right; margin-right: 50px; color: #000000" ng-show="impressao_registros" ng-click="abrirModalImpressao(item)"><i class="fa fa-print"></i> Imprimir</a>
+        </div>
+    </div>
+
+    <div ng-show="dados_contrato_imovel">
+        <span style="font-size: 11px; font-weight: bold">DADOS DO INQUILINO</span>
+        <hr style="border: 1px solid #888888; padding: 0px; margin: 0px; width: 500px;"/>
+    </div>
+
+    <div class="row" style="margin-bottom: 20px;" ng-show="dados_contrato_imovel" >
+
+        <div class="col-md-4">
+            <span style="font-weight: bold; font-size: 11px;"> Inquilino:</span> <span style="font-size: 11px; text-transform: uppercase"> {{ item.NOME}} </span>
+        </div>
+
+        <div class="col-md-1">
+            <span style="font-weight: bold; font-size: 11px;"> DDD:</span> <span style="font-size: 11px; text-transform: uppercase"> {{ item.DDD }} </span>
+        </div>
+
+        <div class="col-md-2">
+            <span style="font-weight: bold; font-size: 11px;"> Resid:</span> <span style="font-size: 11px; text-transform: uppercase"> {{ item.RESIDENCIAL }} </span>
+        </div>
+        <div class="col-md-2">
+            <span style="font-weight: bold; font-size: 11px;"> Comerc:</span> <span style="font-size: 11px; text-transform: uppercase"> {{ item.COMERCIAL }} </span>
+        </div>
+        <div class="col-md-2">
+            <span style="font-weight: bold; font-size: 11px;"> Cell:</span> <span style="font-size: 11px; text-transform: uppercase"> {{ item.CELULAR }} </span>
+        </div>
+
+    </div>
+
+    <div ng-show="dados_contrato_imovel">
+        <span style="font-size: 11px; font-weight: bold">DADOS DO IMÓVEL</span>
+        <hr style="border: 1px solid #888888; padding: 0px; margin: 0px; width: 800px;"/>
+    </div>
+    <div class="row" style="margin-bottom: 20px;" ng-show="dados_contrato_imovel" >
+
+        <div class="col-md-4">
+            <span style="font-weight: bold; font-size: 11px;"> Rua:</span> <span style="font-size: 11px; text-transform: uppercase"> {{item.ENDERECO}} </span>
+        </div>
+
+        <div class="col-md-4">
+            <span style="font-weight: bold; font-size: 11px;"> Bairro:</span> <span style="font-size: 11px; text-transform: uppercase"> {{item.BAIRRO}} </span>
+        </div>
+
+        <div class="col-md-2">
+            <span style="font-weight: bold; font-size: 11px;"> CEP:</span> <span style="font-size: 11px; text-transform: uppercase"> {{item.CEP}} </span>
+        </div>
+    </div>
+    <div ng-show="historicosCobranca">
+        <div class="row">
+            <p class="bg-primary " style="padding: 5px; background-color: #F58634 !important; font-size: 12px;" >
+                <span style="color: #000000; font-weight: bold"> <i class="fa fa-bars"></i> DADOS HISTÓRICO </span>
+            </p>
+        </div>
+
+        <div class="row" ng-init="carregaDadosHistorico(item.CODIGO_CONTRATO)">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 150px;">Data</th>
+                    <th>Histórico</th>
+                    <th style="width: 150px;">Responsável</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="historico in historicos">
+                    <td style="font-size: 11px;">{{historico.DATA_HISTORICO | date: 'dd/MM/yyyy'}} {{historico.HORA_HISTORICO}}</td>
+                    <td style="font-size: 11px;">{{historico.HISTORICO}}</td>
+                    <td style="font-size: 11px; text-transform: capitalize">{{historico.RP_COBRANCA}}</td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL LISTA OS ENDERECOS E CONTRATOS -->
+    <div id="modalListaEnderecos" class="modal fade bs-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header dialog-header-notify" style="height: 45px;">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-search"></i> PESQUISA DE CONTRATOS </h4>
+                </div>
+                <div class="row" style="padding: 10px;">
+                    <div class="col-lg-4">
+                        <label for="busca">Busca </label>
+                        <input type="text" id="busca" class="form-control form-group" ng-model="busca">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Contrato</th>
+                                <th>Cod.Imóvel</th>
+                                <th>Endereço</th>
+                                <th>Bairro</th>
+                                <th> - </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr ng-repeat="dado in dados | filter:busca | limitTo: 10" style="font-size: 11px;">
+                                <td> {{dado.CODIGO_CONTRATO}} </td>
+                                <td> {{dado.CODIGO}} </td>
+                                <td> {{dado.ENDERECO}} </td>
+                                <td> {{dado.BAIRRO}} </td>
+                                <td> <a href="" ng-click="consultaContrato(dado.CODIGO_CONTRATO)"> IMP </a> </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL LISTA OS ENDERECOS E CONTRATOS -->
+    <!-- MODAL ERRO DE PROCESSAMENTO DO SISTEMA -->
+    <div class="modal fade bs-modal-lg" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL DE ERRO PROCESSAMENTO DO SISTEMA -->
+    <!-- MODAL CONTRATO NAO ENCONTRADO -->
+    <div class="modal fade bs-modal-sm ajusteModal" id="modalErroContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> INFORMAÇÃO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;">O SISTEMA NÃO ENCONTROU O CONTRATO SOLICITADO.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL DE CONTRATO NAO ENCONTRADO -->
+
+    <!-- MODAL REGISTRO DE COBRANÇA -->
+    <div class="modal fade bs-modal-lg" id="modalRegistroCobranca" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify" style="background-color: #c77405">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-phone"></i> REGISTRO COBRANÇA</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <span style="font-weight: bold">Contrato: </span> <span> {{contratoRegistro}} </span>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <span style="font-weight: bold">Responsável pelo registro: </span> <span style="text-transform: capitalize">{{rpRegistro}}</span>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <span style="font-weight: bold">Data registro: </span> <span> {{dataRegistro}} </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12" style="margin-top: 10px;">
+                            <textarea style="width: 100%" rows="10" ng-model="item.HISTORICO"></textarea>
+                        </div>
+                    </div>
+                    <span style="font-size: 11px;" ng-if="item.HISTORICO.length > 0">Total de caracteres: {{item.HISTORICO.length}}</span>
+                    <span style="font-size: 11px; margin-left: 50px;" ng-if="item.HISTORICO.length > 0"> Seja o mais breve possível</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-if="item.HISTORICO.length > 10" ng-click="gravarRegistro(item)"><i class="fa fa-phone"></i> Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL DE REGISTRO DE COBRANÇA -->
+
+    <!-- MODAL SELEÇÃO DE IMPRESSÃO -->
+    <div class="modal fade bs-modal-sm ajusteModal" id="modalImpressaoCartas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify" style="background-color: #c77405">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-print"></i> IMPRESSÃO CARTA DE COBRANÇA</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="modelo_carta" id="modelo_carta">* Informe o modelo carta</label>
+
+                            <select class="form-control form-group" ng-model="select" >
+                                <option value="">Informe</option>
+                                <option value="cob_loc_mc01">Cobrança Locatário MC01</option>
+                                <option value="cob_loc_mc02">Cobrança Locatário MC02</option>
+                                <option value="cob_fia_mc03">Cobrança Fiadores MC03</option>
+                                <option value="cob_loc_spc">SPC Locatários</option>
+                                <option value="cob_fia_spc">SPC Fiadores</option>
+                                <option value="cob_loc_acao_juducial">Notificação Ação Locatário</option>
+                                <option value="cob_fia_acao_juducial">Notificação Ação Fiador</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!-- CARTA MC LOCATARIO -->
+                        <div class="col-lg-12" ng-if="select == 'cob_loc_mc01' || select == 'cob_loc_mc02' || select == 'cob_loc_spc' || select == 'cob_loc_acao_juducial'">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr ng-repeat="dados in dadosContrato" style="font-size: 11px;">
+                                        <td ng-if="dados.TIPO_CLIENTE_CONTRATO == 'I'">{{dados.NOME}}</td>
+                                        <td ng-if="dados.TIPO_CLIENTE_CONTRATO == 'I'"><i class="fa fa-print"></i> <a href="" style="color: #000000" ng-click="gerarCarta(dados, select)"> Imprimir </a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- CARTA MC FIADORES -->
+                        <div class="col-lg-12" ng-if="select == 'cob_fia_mc03' || select == 'cob_fia_spc' || select == 'cob_fia_acao_juducial'">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr ng-repeat="dados in dadosContrato" style="font-size: 11px;">
+                                    <td ng-if="dados.TIPO_CLIENTE_CONTRATO == 'F'">{{dados.NOME}}</td>
+                                    <td ng-if="dados.TIPO_CLIENTE_CONTRATO == 'F'"><i class="fa fa-print"></i> <a href="" style="color: #000000" ng-click="gerarCarta(dados, select)"> Imprimir </a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA MODAL DE CONTRATO NAO ENCONTRADO -->
+
+    <!-- MODAL PERGUNTANDO SE A IMPRESSÃO FOI FEITA CORRETAMENTE -->
+    <div class="modal fade bs-modal-sm ajusteModal" id="modalInformacaoGeracaoCarta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> INFORMAÇÃO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px; font-weight: bold">A CARTA FOI GERADA CORRETAMENTE ?</span>
+                </div>
+
+                <div class="modal-footer" >
+                    <span style="font-size: 11px; float: left" ng-show="msn_erro_gravar_historico">Erro ao gravar no historico, tente novamente ou gere manual !</span>
+                    <span style="font-size: 11px;" ng-show="msn_processando">Aguarde, processando ...</span>
+                    <button type="button" ng-hide="botoesModalImpressao" class="btn btn-danger" data-dismiss="modal">Não</button>
+                    <button type="button" ng-hide="botoesModalImpressao" class="btn btn-default" ng-click="gravarHistoricoCarta()">Sim, Impressão feita corretamente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DA PERGUNTANDO SE A IMPRESSÃO FOI FEITA CORRETAMENTE -->
+
+
+</div>
+
+
+

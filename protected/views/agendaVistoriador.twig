@@ -1,0 +1,93 @@
+<script type="text/javascript">
+   window.onload=function(){window.print();}
+</script>
+<html>
+<head>
+
+    <style type="text/css" media="print">
+        #landscape {
+            width: 100%;
+            height: 100%;
+            margin: 0% 0% 0% 0%;
+            filter: progid:DXImageTransform.Microsoft.BasicImage(Rotation=3);
+            background: #f9f9f9;
+        }
+
+        @media print{@page {size: landscape}}
+
+    </style>
+
+</head>
+
+<body style="font: 20px times new roman; color: rgb(96,20,64);">
+
+<div id="landscape" class="dont-print">
+    <div style="width: 100%; height: 80px;border-top: 1px solid #000000; border-bottom: 1px solid #000000;">
+        <div style="margin-top: 5px;">
+            <img src="/image/logo_master.png" height="50" width="120" style="float: left; margin:3px; margin-top: 10px;"/>
+            <span style=" margin-left: 20%; font-size: 11px;">MASTER EMPREENDIMENTOS E CONSTRUÇÕES LTDA - CNPJ 17.709.692/0001-44</span>
+        </div>
+        <div style="width: 300px; margin-left: 400px; margin-top: 20px;">
+            <span style="font-size: 17px;">AGENDA VISTORIADOR - <span style="text-transform: uppercase"> {{ data[0]['VISTORIADOR'] }} </span></span>
+        </div>
+        <div style="float: right; margin-right: 5px; font-size: 11px;">
+            {% set dataInicial = dadosSelecao['dataInicial'] | split('-') %}
+            {% set dataFinal = dadosSelecao['dataFinal'] | split('-') %}
+
+            <span>a {{ dataFinal[2]~"/"~dataFinal[1]~"/"~dataFinal[0]}} </span>
+        </div>
+        <div style="float: right; margin-right: 5px; font-size: 11px;">
+            <span>Período: {{ dataInicial[2]~"/"~dataInicial[1]~"/"~dataInicial[0]}} </span>
+        </div>
+    </div>
+
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr style="font-size: 12px;">
+                <th style="width: 50px; text-align: left">Hora</th>
+                <th style="width: 100px; text-align: left">Tipo</th>
+                <th style="width: 100px; text-align: left">Data</th>
+                <th style="width: 300px; text-align: left">Endereço</th>
+                <th style="width: 300px; text-align: left">Bairro</th>
+                <th style="width: 100px; text-align: left">Cod.Imv</th>
+                <th style="width: 100px; text-align: left">Contrato</th>
+                <th style="width: 150px; text-align: left">Sol.</th>
+                <th style="width: 100px; text-align: left">Tel.</th>
+                <th style="width: 100px; text-align: left">Tel.</th>
+            </tr>
+            </thead>
+        {% for dados in data  %}
+            {% set dataVistoria = dados.DATA_VISTORIA | split('-') %} {# altera o formato de data de americano para brasileiro #}
+            <tbody style="font-size: 11px;">
+                <td> {{ dados.HORARIO }} </td>
+                <td style="text-transform: capitalize"> {{ dados.TIPO_VISTORIA }} </td>
+                <td> {{ dataVistoria[2]~"/"~ dataVistoria[1]~"/"~dataVistoria[0]}} </td>
+                <td> {{ dados['ENDERECO'] }} </td>
+                <td> {{ dados['BAIRRO'] }} </td>
+                <td> {{ dados['CODIGO'] }} </td>
+                <td> {{ dados['CODIGO_CONTRATO'] }} </td>
+                <td> {{ dados['SOLICITANTE'] }} </td>
+                <td> {{ dados['TEL_RESIDENCIAL_SOLICITANTE'] }} </td>
+                <td> {{ dados['TEL_COMERCIAL_SOLICITANTE'] }} </td>
+
+                </tbody>
+                <tbody>
+                <td colspan="4"><span style="font-size: 11px; font-weight: bold">Observação do Chamado:</span> <span style="font-size: 11px;"> {{ dados['SOLICITACAO'] }} </span></td>
+                <td colspan="4"><span style="font-weight: bold; font-size: 11px;">Observação do Imóvel:</span> <span style="font-size: 11px;"> {{ dados['TEXTO'] }} </span></td>
+                </tbody>
+                <tbody>
+                <td colspan="10"><span> -------------------------------------------------------------------------------------------------------------------------------------------------------------- </span></td>
+            </tbody>
+
+        {% endfor %}
+
+
+        </table>
+    </div>
+
+</div>
+
+</body>
+
+</html>

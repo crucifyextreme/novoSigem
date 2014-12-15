@@ -1,0 +1,148 @@
+<div ng-controller="ControllerSac">
+    <p class="bg-primary" style="font-weight: bold; padding: 10px;"> <i class="fa fa-wrench fa-fw"></i> CADASTRO DE PRESTADOR <span style="float: right"></span> </p>
+    <!-- DIV PRESTADORES -->
+    <div class="row" style="border-top: 1px solid #dddddd; border-left: 1px solid #dddddd;border-right: 1px solid #dddddd; padding-top: 10px; padding-bottom: 10px;">
+
+        <div class="col-lg-4">
+            <label for="prestador">* Prestador/Empresa</label>
+            <input type="text" class="form-control" id="prestador" ng-model="item.PRESTADOR">
+        </div>
+
+        <div class="col-lg-2" style="margin-top: 26px;">
+            <button type="button" class="btn btn-default btn-sm" ng-click="liberarCadastroPrestador()">
+                <span class="glyphicon glyphicon-plus-sign"></span> Novo
+            </button>
+        </div>
+    </div>
+    <div class="row" style="border-left: 1px solid #dddddd; border-right: 1px solid #dddddd">
+
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="prioridade">* Tipo Cliente</label>
+                <select class="form-control" name="prioridade" ng-disabled="d_inputs_cadastro_prestador" id="prioridade"  ng-model="item.TIPO_CLIENTE" ng-change=" ( (item.CPF = '') || (item.CNPJ = '') )" >
+                    <option value="">Informe</option>
+                    <option value="fisica">Física </option>
+                    <option value="juridica">Jurídica</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-lg-2">
+            <label for="cpf">* CPF</label>
+            <input type="text" class="form-control" id="cpf" ui-mask="999.999.999-99" ng-model="item.CPF" ng-disabled="!(item.TIPO_CLIENTE == 'fisica') || d_cpf_prestador" model-view-value="true">
+        </div>
+
+        <div class="col-lg-2">
+            <label for="cnpj">* CNPJ</label>
+            <input type="text" class="form-control" id="cnpj" ui-mask="99.999.999/9999-99" ng-model="item.CNPJ" ng-disabled="!(item.TIPO_CLIENTE == 'juridica') || d_cnpj_prestador" model-view-value="true">
+        </div>
+
+        <div class="col-lg-3">
+            <label for="responsavel">* Responsável</label>
+            <input type="text" class="form-control" id="responsavel" ng-model="item.RESPONSAVEL" ng-disabled="(!item.CPF) && (!item.CNPJ)" >
+        </div>
+        <div class="col-lg-3">
+            <label for="t_prestacao">* Tipo Prestação</label>
+            <input type="text" class="form-control" id="t_prestacao" ng-model="item.TIPO_PRESTACAO" ng-disabled="!(item.RESPONSAVEL)" >
+        </div>
+    </div>
+    <div class="row" style="border-left: 1px solid #dddddd; border-right: 1px solid #dddddd">
+        <div class="col-lg-3">
+            <label for="responsavel">Email</label>
+            <input type="text" class="form-control" id="email" ng-model="item.EMAIL" ng-disabled="disabledInput">
+        </div>
+        <div class="col-lg-2">
+            <label for="responsavel">* Telefone 1</label>
+            <input type="text" class="form-control" id="telefone1" ng-model="item.TELEFONE1" ng-disabled="!(item.TIPO_PRESTACAO)" ui-mask="(99)9999-9999" model-view-value="true">
+        </div>
+        <div class="col-lg-2">
+            <label for="t_prestacao">Telefone 2</label>
+            <input type="text" class="form-control" id="telefone2" ng-model="item.TELEFONE2" ui-mask="(99)9999-9999" model-view-value="true">
+        </div>
+    </div>
+    <div class="row" style=" border-left: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd">
+
+        <!-- BOTÃO DE SALVAR DADOS PRESTADOR -->
+        <div class="col-lg-2" ng-hide="bt_gravar_prestador" style="margin: 20px">
+            <button type="submit" ng-disabled="!(!!item.PRESTADOR && !!item.TIPO_CLIENTE && item.CPF  && !!item.RESPONSAVEL && item.TIPO_PRESTACAO && item.TELEFONE1 || item.CNPJ && !!item.RESPONSAVEL && item.TIPO_PRESTACAO && item.TELEFONE1) || bt_salvar_dados" class="btn btn-default"
+                    ng-click="cadastrarNovoPrestador(item)"><span class="glyphicon glyphicon-floppy-saved"></span> Salvar Dados
+            </button>
+        </div>
+
+        <!-- BOTÃO DE ATUALIZAR DADOS DO PRESTADOR -->
+        <div class="col-lg-2" ng-show="bt_atualiza_dados_prestador" style="margin: 20px">
+            <button class="btn btn-default" ng-click="atualizaDadosPrestador(item)"><span class="glyphicon glyphicon-floppy-disk"></span> Atualizar Dados
+            </button>
+        </div>
+
+    </div>
+    <!-- Fim da Div de PRESTADORES -->
+
+    <p class="bg-primary" style="font-weight: bold; padding: 10px; margin-top: 10px;"> <i class="fa fa-list"></i> PRESTADORES CADASTRADOS NO SISTEMA <span style="float: right"></span> </p>
+    <!-- Div lista os PRESTADORES cadastrados no sistema -->
+    <div class="row" ng-init="buscaTodosPrestadores()">
+        <div class="col-lg-12">
+            <table class="table table-striped">
+                <thead>
+                <tr style="font-size: 12px; font-weight: bold">
+                    <th>Prestador</th>
+                    <th>Prestação</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Telefone</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="prestadores in prestadoresSistema" style="font-size: 11px;">
+                    <td style="text-transform: capitalize"><a href="" ng-click="buscaPrestadorNome(prestadores.PRESTADOR)"> {{prestadores.PRESTADOR}} </a></td>
+                    <td style="text-transform: capitalize">{{prestadores.TIPO_PRESTACAO}}</td>
+                    <td>{{prestadores.EMAIL}}</td>
+                    <td>{{prestadores.TELEFONE1}}</td>
+                    <td>{{prestadores.TELEFONE2}}</td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- fim da div lista os PRESTADORES cadastrados no sistema -->
+
+
+    <!-- Modal prestador ja cadastrado no sistema -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalPrestadorJaCadastrado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-notify">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> INFORMAÇÃO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;">PRESTADOR JÁ CADASTRADO NO SISTEMA.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ERRO DE PROCESSAMENTO DO SISTEMA -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

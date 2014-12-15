@@ -1,0 +1,62 @@
+<style>
+    body {
+        background-image: url("/image/ilustacao.jpg");
+        background-repeat: no-repeat;
+    }
+</style>
+<div ng-controller="ControllerPrincipal" ng-init="iniciaSistema()">
+
+    <div class="row" style="margin-top: 150px;">
+        <div class="col-md-2 col-md-offset-6">
+            <span class="glyphicon glyphicon-user" aria-hidden="true" style="color: #F57921"></span>
+                <span style="text-transform: uppercase; font-weight: bold">{{logado}}</span>
+        </div>
+
+        <div class="col-md-4">
+
+            <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="color: #F57921"></span>
+            <span style=" font-weight: bold">{{login_usuario}}</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-6" style="margin-top: 25px;">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true" style="color: #F57921"></span>
+                <span style="font-size: 11px"> Menu Rápido SAC</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-6" style="margin-top: 10px; width: 150px;">
+            <a href="#/sac/novoChamado" ng-hide="novoChamadoLink()" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-file fa-2x"></i> Novo Chamado</a>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px; width: 180px;">
+            <a href="#/sac/chamadosAbertos" ng-hide="chamadoAbertoLink()" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-edit fa-2x"></i> Chamados Abertos</a>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <a href="#/sac/prestadores/financeiro" ng-hide="visualizarPagamentosPrestadoresLink()" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-money fa-2x"></i> Financeiro</a>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-2 col-md-offset-6" style="margin-top: 25px;">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true" style="color: #F57921"></span>
+            <span style="font-size: 11px"> Menu Rápido Vistorias</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-6" style="margin-top: 10px; width: 150px;">
+            <a href="#/vistoria/agendamento" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-calendar fa-2x"></i> Agendamento</a>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px; width: 180px;">
+            <a href="#/vistoria/abertas" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-edit fa-2x"></i> Vistorias Em Aberto</a>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <a href="#/vistoria/agendaVistoriador" style="margin-left: 20px; color: #000000; font-size: 11px;"><i class="fa fa-calendar-o fa-2x"></i> Agenda Vistoriador</a>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,147 @@
+<style>
+
+    /* Custom dialog/modal headers */
+
+    .dialog-header-error { background-color: #d2322d; }
+    .dialog-header-wait { background-color: #428bca; }
+    .dialog-header-notify { background-color: #eeeeee; }
+    .modal-header-confirm { background-color: #333333; height: 50px; }
+    .modal-title { color: #ffffff}
+
+
+</style>
+
+
+<div ng-controller="ControllerVistoria">
+
+<div class="row" ng-show="msnVistoriaEmAberto()">
+    <div class="col-lg-5">
+        <span style="font-size: 13px;">Nenhuma vistoria em aberto no sistema !</span>
+    </div>
+</div>
+
+<div class="row" ng-hide="pesquisaVistoriasAbertas()">
+    <div class="col-lg-2" style="margin-left: 15px;">
+        <div class="form-group">
+            <label for="pesquisa">Pesquisa de Dados</label>
+            <input type="text" class="form-control" id="pesquisa" ng-model="pesquisa">
+        </div>
+    </div>
+
+    <div class="col-lg-2" style="margin-left: 15px; width: 150px;">
+        <div class="form-group">
+            <label for="pesquisa">Data Inicial</label>
+            <input type="text" class="form-control" ng-model="dataInicial" directiva-data ui-mask="99/99/9999" model-view-value="true">
+        </div>
+    </div>
+
+    <div class="col-lg-2" style="width: 150px;">
+        <div class="form-group">
+            <label for="pesquisa">Data Final</label>
+            <input type="text" class="form-control" ng-model="dataFinal" directiva-data ui-mask="99/99/9999"  model-view-value="true">
+        </div>
+    </div>
+
+    <div class="col-lg-5" style="margin-top: 23px;">
+        <ol class="breadcrumb" style="background-color: #E98531">
+            <li class="active" style="color: #000000; font-weight: bold"><i class="fa fa-calendar"></i> &nbsp;VISTORIAS ABERTAS NO SISTEMA</li>
+        </ol>
+    </div>
+</div>
+
+    <div ng-init="loadAllOpen()">
+        <table class="table table-hover" ng-hide="tabelaVistoriasAbertas()">
+            <thead>
+            <tr>
+                <th>Contrato</th>
+                <th>Cod.Imóvel</th>
+                <th>Status</th>
+                <th>Acompanhada</th>
+                <th>Endereço</th>
+                <th>Vistoriador</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="vistoria in vistorias | limitTo: limit" style="font-size: 11px;">
+
+                <td>{{vistoria.CODIGO_CONTRATO}}</td>
+                <td>{{vistoria.CODIGO}}</td>
+                <td style="text-transform: capitalize">{{vistoria.STATUS}}</td>
+                <td style="text-transform: capitalize"><span style="margin-left: 30px;"> {{vistoria.VISTORIA_ACOMPANHADA}} </span></td>
+                <td style="text-transform:uppercase">{{vistoria.ENDERECO}}</td>
+                <td style="text-transform: capitalize">{{vistoria.VISTORIADOR}}</td>
+                <td>{{vistoria.DATA_VISTORIA | date : 'dd/MM/yyyy'}}</td>
+                <td>{{vistoria.HORARIO}}</td>
+                <td style="text-transform: capitalize">{{vistoria.TIPO_VISTORIA}}</td>
+                <td>
+                    <!-- Impressao do laudo vistoria, quando a vistoria for de recebimento -->
+                    <a href="/vistoria/impressao/laudo/{{vistoria.ID_VISTORIA}}" target="_blank" ng-if="vistoria.TIPO_VISTORIA == 'recebimento' "><img src="/icones/printIcon.png" /></a>
+                    <img src="/icones/printIconDisabled.png" ng-if="vistoria.TIPO_VISTORIA != 'recebimento' " />
+
+                    <!-- Editar vistoria -->
+                    <a href="#/vistoria/editar/?id={{vistoria.ID_VISTORIA}}" title="Editar Dados Vistoria">
+                        <img src="/icones/editIcon.png" />
+                    </a>
+                    <!-- Finalizar vistoria -->
+                    <a href="" title="Finalizar Vistoria" ng-if="vistoria.STATUS == 'aberta' " ng-click="openModalAcoes(vistoria.ID_VISTORIA, 'finalizada')">
+                        <img src="/icones/closeIcon.png" />
+                    </a>
+                    <!-- Finalizar vistoria -->
+
+                    <img src="/icones/closeIconDisabled.png" ng-if="vistoria.STATUS == 'cancelada' || vistoria.STATUS == 'finalizada' "/>
+
+
+                    <!-- Se o status da vistoria for diferente de cancelada Libero o cancelamento -->
+                    <a href="" title="Cancelar Vistoria" ng-if="vistoria.STATUS == 'aberta' " ng-click="openModalAcoes(vistoria.ID_VISTORIA, 'cancelada')">
+                        <img src="/icones/cancelIcon.png" />
+                    </a>
+                    <!-- Se o status da vistoria for igual a cancelada não libero mais o cancelamento -->
+                    <img src="/icones/cancelIconDisabled.png" ng-if="vistoria.STATUS != 'aberta'" title="Vistoria Cancelada"/>
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+        <!-- PAGINAÇÃO -->
+        <div data-pagination="" data-num-pages="numPages()"
+             data-current-page="currentPage" data-max-size="maxSize"
+             data-boundary-links="true" >
+        </div>
+
+    </div>
+
+
+    <!-- Janelas Modais -->
+    <!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+    <div class="modal fade ajusteModal" id="modalAcoes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header-confirm">
+                    <button type="button" class="close" data-dismiss="modal" style="margin-right: 20px; margin-top: 10px;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="padding-left: 30px; padding-top: 10px;"><i class="fa fa-check-square-o 2x"> </i> Janela de Confirmação</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-weight: bold">Tem certeza que deseja {{acao}} a vistoria ?</span>
+                </div>
+                <div class="modal-footer">
+
+                    <span style="font-size: 11px;" ng-show="processando()"><img src="/image/159.gif"/> Processando requisição ...</span>
+                    <div ng-hide="btnActions()">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                        <button type="button" class="btn btn-primary" ng-click="actionVistoria(id_vistoria, action)">Sim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+    <!-- Fim janelas modais -->
+
+</div>

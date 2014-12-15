@@ -1,0 +1,70 @@
+<form role="form" ng-controller="ControllerVistoria" ng-submit="buscaAgendaVistoriador(item)" ng-init="loadPage()">
+    <div class="row">
+        <div class="col-lg-2" style="width: 150px;">
+            <label for="data_inicial">* Data Inicial</label>
+            <input type="text" class="form-control" ng-model="item.dataInicial" id="data_inicial" directiva-data ui-mask="99/99/9999" model-view-value="true"/>
+
+        </div>
+        <div class="col-lg-2" style="width: 150px;">
+            <label for="data_final">* Data Final</label>
+            <input type="text" class="form-control" ng-model="item.dataFinal" id="data_final" directiva-data ui-mask="99/99/9999" model-view-value="true"/>
+        </div>
+        <div class="col-lg-2" style="margin-left: 15px;">
+            <label for="pesquisa">Vistoriador</label>
+            <select class="form-control form-group" ng-model="item.vistoriador" ng-disabled="!item.dataFinal">
+                <option value="">Selecione</option>
+                <option value="flavio">Flavio</option>
+                <option value="juneo">Juneo</option>
+            </select>
+        </div>
+        <div class="col-lg-2" style="margin-top: 25px;">
+            <button type="submit" ng-disabled="!(!!item.dataInicial && !!item.dataFinal && !!item.vistoriador)" class="btn btn-default"
+                    >Pesquisar
+            </button>
+        </div>
+        <div class="col-lg-2" style="margin-top: 25px;">
+            <a href="" ng-click="gerarAgenda(item)" ng-model="printer_agenda" ng-show="imprimirAgenda()"><i class="fa fa-print fa-2x"></i> Imprimir Agenda</a>
+        </div>
+
+    </div>
+    <div class="row" ng-show="msn_nada_encontrado()">
+        <div class="col-lg-7">
+            <span style="font-weight: bold"> O sistema não encontrou nada com os parâmetros passados. </span>
+        </div>
+    </div>
+    <table class="table table-hover" ng-show="tabelaAgenda()">
+        <thead>
+        <tr style="font-size: 11px;">
+            <th>Contrato</th>
+            <th>Cod.Imóvel</th>
+            <th>Endereço</th>
+            <th>Bairro</th>
+            <th>Tipo</th>
+            <th>Vistoriador</th>
+            <th>Solicitante</th>
+            <th>Horário</th>
+            <th>Data</th>
+            <th>Telefone</th>
+            <th>Telefone</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="vistoria in vistorias" style="font-size: 11px;">
+            <td> {{vistoria.CODIGO_CONTRATO}} </td>
+            <td> {{vistoria.CODIGO}} </td>
+            <td style="text-transform: capitalize"> {{vistoria.ENDERECO}} </td>
+            <td style="text-transform: uppercase"> {{vistoria.BAIRRO}} </td>
+            <td style="text-transform: capitalize"> {{vistoria.TIPO_VISTORIA}} </td>
+            <td style="text-transform:capitalize"> {{vistoria.VISTORIADOR}} </td>
+            <td> {{vistoria.SOLICITANTE}} </td>
+            <td> {{vistoria.HORARIO}} </td>
+            <td> {{vistoria.DATA_VISTORIA | date: 'dd/MM/yyyy'}} </td>
+            <td> {{vistoria.TEL_COMERCIAL_SOLICITANTE}} </td>
+            <td> {{vistoria.TEL_RESIDENCIAL_SOLICITANTE}} </td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</form>

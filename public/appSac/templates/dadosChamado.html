@@ -1,0 +1,343 @@
+<style>
+
+    input[type="text"] {
+        color: #666666;
+    }
+</style>
+
+
+
+<div ng-controller="ControllerSac" ng-init="carregaDadosChamadoSelecionado()" ng-submit="updateChamado(item)">
+    <form role="form">
+        <!-- CAMPO OCULTO PEGANDO O ID DA VISTORIA -->
+        <input type="hidden" ng-model="item.ID_VISTORIA" value="{{item.ID_SAC}}">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="contrato">* Contrato</label>
+                    <input type="text" class="form-control" id="contrato" ng-model="item.CODIGO_CONTRATO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="cod_imovel">* Cod.Imóvel</label>
+                    <input type="text" class="form-control" name="cod_imovel" id="cod_imovel" ng-model="item.CODIGO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="prioridade">* Prioridade</label>
+                    <select class="form-control" name="prioridade" id="prioridade" ng-model="item.PRIORIDADE" ng-disabled="disabledInputs()">
+                        <option value="">Informe</option>
+                        <option value="baixa">Baixa</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-1">
+                <div class="dropdown" style="margin-top: 23px;">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" ng-disabled="disabledInputs()">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" >
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="" ng-click="openModalAcoes(item.ID_SAC, 'cancelada')"><i class="fa fa-recycle"></i> Cancelar Chamado</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="" ng-click="openModalAcoes(item.ID_SAC, 'finalizada')"><i class="fa fa-check-square"></i> Finalizar Chamado</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href=""> <i class="fa fa-calendar"></i> Criar Vistoria</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#/sac/chamado/prestadores/{{item.ID_SAC}}"> <i class="fa fa-wrench"></i> Adicionar Prestador</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3" style="margin-top: 20px;" ng-hide="bt_prestadores_chamado">
+                <a href="#/sac/chamado/prestadores/{{item.ID_SAC}}" style="color: #446a89"> <i class="fa fa-wrench"></i> <span style="font-size: 11px; font-weight: bold">PRESTADORES NO CHAMADO</span></a>
+            </div>
+
+        </div>
+
+        <!-- DADOS DO IMÓVEL / PROPRIETÁRIO -->
+        <div class="row">
+            <div class="col-lg-12">
+                <ol class="breadcrumb" style="background-color: #E98531">
+                    <li class="active" style="color: #ffffff; font-size: 11px;"><i class="fa fa-user"> </i> DADOS DO IMÓVEL / PROPRIETÁRIO </li>
+                </ol>
+
+            </div>
+        </div>
+
+        <div class="row" style="border-top: 1px solid #dddddd; border-left: 1px solid #dddddd; border-right: 1px solid #dddddd; padding-top: 10px;" ng-hide="dadosProp">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="end_imovel">* Endereço Imóvel</label>
+                    <input type="text" class="form-control" name="end_imovel" id="end_imovel" ng-model="item.ENDERECO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="bairro">* Bairro</label>
+                    <input type="text" class="form-control" name="bairro" id="bairro" ng-model="item.BAIRRO" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="proprietario">* Proprietário</label>
+                    <input type="text" class="form-control" name="proprietario" id="proprietario" ng-model="item.NOME" disabled>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="border-left: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd " ng-hide="dadosProp">
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="ddd">DDD</label>
+                    <input type="text" class="form-control" name="ddd" id="ddd" ng-model="item.DDD" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_residencial">* Tel.Residencial</label>
+                    <input type="text" class="form-control" name="tel_residencial" id="tel_residencial" ng-model="item.RESIDENCIAL" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_celular">Tel.Celular</label>
+                    <input type="text" class="form-control" name="tel_celular" id="tel_celular" ng-model="item.CELULAR" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_comercial">Tel.Comercial</label>
+                    <input type="text" class="form-control" name="tel_comercial" id="tel_comercial" ng-model="item.COMERCIAL" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" name="email" id="email" ng-model="item.E_MAIL" disabled>
+                </div>
+            </div>
+        </div>
+        <!-- FIM DOS DADOS DO PROPRIETÁRIO -->
+
+        <!-- DADOS DA VISTORIA -->
+        <div class="row" style="margin-top: 20px;" ng-hide="tituloVistoria()">
+            <div class="col-lg-12">
+                <ol class="breadcrumb" style="background-color: #E98531">
+                    <li class="active" style="color: #ffffff; font-size: 11px;"><i class="fa fa-calendar"> </i> DADOS DA VISTORIA </li>
+                </ol>
+
+            </div>
+        </div>
+
+        <!-- Div de Vistoria -->
+        <div class="row" style="border: 1px solid #dddddd; padding-top: 10px;" ng-hide="dadosVist" ng-show="dadosVistoria()">
+            <div class="col-lg-3">
+                <label for="vistoriador">* Vistoriador</label>
+                <select class="form-control form-group" name="prioridade" id="vistoriador" ng-model="item.VISTORIADOR" ng-disabled="disabledInputs()">
+                    <option value="">Informe</option>
+                    <option value="flavio">Flavio</option>
+                    <option value="juneo">Juneo</option>
+                </select>
+            </div>
+            <div class="col-lg-1">
+                <label for="horario">* Hrs</label>
+                <input type="text" class="form-control" id="horario" ng-model="item.HORARIO" ui-mask="99:99" style="font-size: 10px;" ng-disabled="disabledInputs()">
+            </div>
+            <div class="col-lg-2">
+                <label for="data_vistoria">* Data Vistoria</label>
+                <input type="text" class="form-control" id="data_vistoria" ui-date="dateOptions" ui-date-format="dd/mm/yy" ng-model="item.DATA_VISTORIA" ng-disabled="disabledInputs()">
+            </div>
+            <div class="col-lg-3">
+                <label for="tipo_vistoria">* Tipo Vistoria</label>
+                <select class="form-control form-group" name="prioridade" id="tipo_vistoria" ng-model="item.TIPO_VISTORIA" ng-disabled="disabledInputs()">
+                    <option value="">Informe</option>
+                    <option value="conferencia">Conferência</option>
+                    <option value="entrega">Entrega</option>
+                    <option value="recebimento">Recebimento</option>
+                </select>
+            </div>
+            <div class="col-lg-2" style="margin-top: 20px;">
+                <a href="" title="Abrir Agenda de Vistorias" ng-click="agenda()"><i class="fa fa-calendar fa-1x"></i> Agenda Vistoria</a>
+            </div>
+        </div>
+        <!-- Fim da Div de Vistoria -->
+
+
+
+
+        <!-- DADOS DA SOLICITAÇÃO -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-lg-12">
+                <ol class="breadcrumb" style="background-color: #E98531">
+                    <li class="active" style="color: #ffffff; font-size: 11px;"><i class="fa fa-reorder"> </i> DADOS DA SOLICITAÇÃO </li>
+                </ol>
+
+            </div>
+        </div>
+        <div class="row" style="border-top: 1px solid #dddddd; border-left: 1px solid #dddddd; border-right: 1px solid #dddddd; padding-top: 10px;" ng-hide="dadosSol">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="solicitante">* Solicitante</label>
+                    <input type="text" class="form-control" name="solicitante" id="solicitante" ng-model="item.SOLICITANTE" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_residencial_solicitante">* Tel.Residencial</label>
+                    <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_residencial_solicitante" id="tel_residencial_solicitante" ng-model="item.TEL_RESIDENCIAL_SOLICITANTE" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="tel_comercial_solicitante">Tel.Comercial</label>
+                    <input type="text" class="form-control" ui-mask="(99)9999-9999" name="tel_comercial_solicitante" id="tel_comercial_solicitante" ng-model="item.TEL_COMERCIAL_SOLICITANTE" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="email_solicitante">Email</label>
+                    <input type="email" class="form-control" name="email_solicitante" id="email_solicitante" ng-model="item.EMAIL_SOLICITANTE"
+                           oninvalid="setCustomValidity('Email Inválido')" onchange="try{setCustomValidity('')}catch(e){}" ng-disabled="disabledInputs()">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="border-left: 1px solid #dddddd; border-right: 1px solid #dddddd " >
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label for="solicitacao">* Solicitação</label>
+                    <textarea class="form-control" rows="3" name="solicitacao" id="solicitacao" ng-model="item.SOLICITACAO" maxlength="200" ng-disabled="disabledInputs()"></textarea>
+                    <span style="font-size: 11px;">{{item.SOLICITACAO.length}}  - Max 200 caracteres</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-lg-2" style="width: 150px;" >
+                <button type="submit" ng-disabled="!(!!item.PRIORIDADE && !!item.SOLICITANTE && item.TEL_RESIDENCIAL_SOLICITANTE && !!item.TEL_RESIDENCIAL_SOLICITANTE
+                && item.SOLICITACAO)" class="btn btn-default"
+                         ng-hide="btn_salvar_edicao"><span class="glyphicon glyphicon-floppy-saved"></span> Salvar Edição
+                </button>
+                <!-- So vai aparecer se a vistoria for diferente de aberta -->
+                <button type="submit" disabled ng-show="btn_salvar_edicao_disabilitado" class="btn btn-default">Salvar Edição</button>
+            </div>
+            <div class="col-lg-4">
+                <p style="font-size: 12px; font-weight: bold">* Campos Obrigatórios</p>
+            </div>
+        </div>
+    </form>
+
+    <!-- HISTORICO -->
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-lg-12">
+            <ol class="breadcrumb" style="background-color: #E98531">
+                <li class="active" style="color: #ffffff; font-size: 11px;"><i class="fa fa-edit"> </i> DADOS DO HISTÓRICO </li>
+            </ol>
+
+        </div>
+    </div>
+    <div class="row" ng-hide="dadosHist">
+        <!-- BOTAO ADICIONAR NOVO HISTORICO -->
+        <div style="margin-left: 20px;" ng-hide="bt_novo_historico">
+            <button type="button" ng-click="modalHistorico(item.ID_SAC)" class="btn btn-default"><i class="fa fa-comments"></i> Novo </button>
+        </div>
+        <div class="col-lg-12" ng-init="loadHistorico()">
+            <table class="table table-hover">
+                <thead>
+                <tr style="font-weight: bold">
+                    <th>Data</th>
+                    <th>Histórico</th>
+                    <th>RP Histórico</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style="font-size: 11px;" ng-repeat="historico in historicos">
+                    <td>{{historico.DATA_HISTORICO | date: 'dd/MM/yyyy'}}, {{historico.HORA_HISTORICO}}</td>
+                    <td>{{historico.DADOS_HISTORICO}}</td>
+                    <td style="text-transform: capitalize">{{historico.RP_HISTORICO}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal Historico ---- RESPONSAVEL PELA GRAVAÇÃO DE HISTORICO DE ACOMPANHAMENTO DO CHAMADO -->
+    <div class="modal fade" id="modalHistorico" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-lg-11" style="margin-left: 15px;">
+                        <div class="form-group">
+                            <label for="historico">HISTÓRICO</label>
+                            <textarea class="form-control" rows="3" name="solicitacao" id="historico" ng-model="solicitacao" maxlength="200"></textarea>
+                            <span style="font-size: 11px;">{{solicitacao.length}}  - Max 200 caracteres</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5" style="margin: 20px;">
+                        <span style="font-size: 11px; font-weight: bold" ng-show="msn_processando">Processando sua requisição ...</span>
+                        <button type="button" ng-hide="btnGravaHistorico" ng-model="id_chamado" ng-click="gravarHistorico(solicitacao,id_chamado)" class="btn btn-default" ng-disabled="!(!!solicitacao)"><span class="glyphicon glyphicon-floppy-saved"></span> Salvar Historico</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Modal Historico ---- RESPONSAVEL PELA GRAVAÇÃO DE HISTORICO DE ACOMPANHAMENTO DO CHAMADO -->
+
+    <!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+    <div class="modal fade ajusteModal" id="modalAcoes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header-confirm">
+                    <button type="button" class="close" data-dismiss="modal" style="margin-right: 20px; margin-top: 10px;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="padding-left: 30px; padding-top: 10px;"><i class="fa fa-check-square-o 2x"> </i> Janela de Confirmação</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-weight: bold">Tem certeza que deseja {{acao}} o chamado ?</span>
+                </div>
+                <div class="modal-footer">
+
+                    <span style="font-size: 11px;" ng-show="processando()"><img src="/image/159.gif"/> Processando requisição ...</span>
+                    <div ng-hide="btnActions()">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                        <button type="button" class="btn btn-primary" ng-click="actionVistoria(id, action)">Sim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Actions ---- RESPONSAVEL PARA CANCELAR E/OU FINALIZAR -->
+
+    <!-- MODAL ERRO DE PROCESSAMENTO DO SISTEMA -->
+    <div class="modal fade bs-example-modal-sm ajusteModal" id="modalErroProcessamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header dialog-header-error">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="color: #000000; font-size: 14px;"><i class="fa fa-info-circle"></i> ERRO DO SISTEMA</h4>
+                </div>
+                <div class="modal-body">
+                    <span style="font-size: 12px;"><i class="fa fa-frown-o fa-2x"></i> AH, NÃO! OCORREU UM ERRO DO SISTEMA, TENTE NOVAMENTE.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
